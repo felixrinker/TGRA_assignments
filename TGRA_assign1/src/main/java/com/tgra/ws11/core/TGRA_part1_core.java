@@ -24,7 +24,7 @@ public class TGRA_part1_core implements ApplicationListener {
 	private static final float speed = 3.0f;
 	private float position_x;
 	private float position_y;
-	private float angle;
+	//private float angle;
 	private Action act;
 	private float box_size;
 	private float box_avg;
@@ -34,7 +34,7 @@ public class TGRA_part1_core implements ApplicationListener {
 
 		this.position_x = 100.0f;
 		this.position_y = 100.0f;
-		this.angle		= 45.0f;
+		//this.angle		= 45.0f;
 		this.box_size	= 50.0f;
 		this.box_avg	= box_size;
 		this.act		= Action.UP_DIAG_RIGHT;
@@ -82,7 +82,7 @@ public class TGRA_part1_core implements ApplicationListener {
 	 */
 	private void update() {
 
-		angle += 1.0f;
+		//angle += 1.0f;
 
 		// if(Gdx.input.isButtonPressed(Input.Buttons.LEFT))
 		if (Gdx.input.justTouched()) {
@@ -105,24 +105,6 @@ public class TGRA_part1_core implements ApplicationListener {
 		if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
 			position_y = update_y(position_y, 5.0f, box_avg, true);
 		}
-	}
-
-	/**
-	 * GRAPHICS CODE
-	 */
-	private void display() {
-
-		Gdx.gl11.glClear(GL10.GL_COLOR_BUFFER_BIT);
-
-		Gdx.gl11.glMatrixMode(GL10.GL_MODELVIEW);
-		Gdx.gl11.glLoadIdentity();
-
-		Gdx.glu.gluOrtho2D(Gdx.gl10, 0, Gdx.graphics.getWidth(), 0,
-				Gdx.graphics.getHeight());
-
-		Gdx.gl11.glColor4f(0.6f, 0.0f, 0.0f, 1.0f);
-
-
 		
 		
 		float box_left	= position_x-box_avg;
@@ -208,7 +190,21 @@ public class TGRA_part1_core implements ApplicationListener {
 				this.position_y = update_y(this.position_y, speed, box_avg, false);
 				break;
 		}
+	}
 
+	/**
+	 * GRAPHICS CODE
+	 */
+	private void display() {
+
+		Gdx.gl11.glClear(GL10.GL_COLOR_BUFFER_BIT);
+
+		Gdx.gl11.glMatrixMode(GL10.GL_MODELVIEW);
+		Gdx.gl11.glLoadIdentity();
+
+		Gdx.glu.gluOrtho2D(Gdx.gl10, 0, Gdx.graphics.getWidth(), 0,
+				Gdx.graphics.getHeight());
+		
 		Gdx.gl11.glColor4f(0.6f, 1.0f, 0.0f, 1.0f);
 		Gdx.gl11.glTranslatef(position_x, position_y, 0);
 		Gdx.gl11.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
