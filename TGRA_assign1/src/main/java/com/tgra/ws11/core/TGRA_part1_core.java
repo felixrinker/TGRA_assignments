@@ -24,7 +24,6 @@ public class TGRA_part1_core implements ApplicationListener {
 	private static final float speed = 3.0f;
 	private float position_x;
 	private float position_y;
-	//private float angle;
 	private Action act;
 	private float box_size;
 	private float box_avg;
@@ -34,7 +33,6 @@ public class TGRA_part1_core implements ApplicationListener {
 
 		this.position_x = 100.0f;
 		this.position_y = 100.0f;
-		//this.angle		= 45.0f;
 		this.box_size	= 50.0f;
 		this.box_avg	= box_size;
 		this.act		= Action.UP_DIAG_RIGHT;
@@ -81,29 +79,25 @@ public class TGRA_part1_core implements ApplicationListener {
 	 * UPDATE CODE
 	 */
 	private void update() {
-
-		//angle += 1.0f;
-
-		// if(Gdx.input.isButtonPressed(Input.Buttons.LEFT))
 		if (Gdx.input.justTouched()) {
 			
-			position_x = update_x(Gdx.input.getX()+box_avg, 0.0f, box_avg, true);
-			position_y = update_y(Gdx.graphics.getHeight() - Gdx.input.getY()+box_avg, 0.0f, box_avg, true);
+			position_x = TGRA_common.update_x(Gdx.input.getX()+box_avg, 0.0f, box_avg, true);
+			position_y = TGRA_common.update_y(Gdx.graphics.getHeight() - Gdx.input.getY()+box_avg, 0.0f, box_avg, true);
 			
 			act = Action.UP_DIAG_RIGHT;
 		}
 
 		if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-			position_x = update_x(position_x, 5.0f, box_avg, false);
+			position_x = TGRA_common.update_x(position_x, 5.0f, box_avg, false);
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-			position_x = update_x(position_x, 5.0f, box_avg, true);
+			position_x = TGRA_common.update_x(position_x, 5.0f, box_avg, true);
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-			position_y = update_y(position_y, 5.0f, box_avg, false);
+			position_y = TGRA_common.update_y(position_y, 5.0f, box_avg, false);
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-			position_y = update_y(position_y, 5.0f, box_avg, true);
+			position_y = TGRA_common.update_y(position_y, 5.0f, box_avg, true);
 		}
 		
 		
@@ -155,39 +149,39 @@ public class TGRA_part1_core implements ApplicationListener {
 		switch(act) {
 		
 			case UP:
-				this.position_y = update_y(this.position_y, speed, box_avg, true);
+				this.position_y = TGRA_common.update_y(this.position_y, speed, box_avg, true);
 				break;
 			
 			case DOWN:
-				this.position_y = update_y(this.position_y, speed, box_avg, false);
+				this.position_y = TGRA_common.update_y(this.position_y, speed, box_avg, false);
 				break;
 				
 			case LEFT:
-					this.position_x = update_x(this.position_x, speed, box_avg, false);
+					this.position_x = TGRA_common.update_x(this.position_x, speed, box_avg, false);
 				break;
 			
 			case RIGHT:
-					this.position_x = update_x(this.position_x, speed, box_avg, true);
+					this.position_x = TGRA_common.update_x(this.position_x, speed, box_avg, true);
 				break;
 				
 			case UP_DIAG_RIGHT:
-				this.position_x = update_x(this.position_x, speed, box_avg, true);
-				this.position_y = update_y(this.position_y, speed, box_avg, true);
+				this.position_x = TGRA_common.update_x(this.position_x, speed, box_avg, true);
+				this.position_y = TGRA_common.update_y(this.position_y, speed, box_avg, true);
 				break;
 				
 			case DOWN_DIAG_LEFT:
-				this.position_x = update_x(this.position_x, speed, box_avg, false);
-				this.position_y = update_y(this.position_y, speed, box_avg, false);
+				this.position_x = TGRA_common.update_x(this.position_x, speed, box_avg, false);
+				this.position_y = TGRA_common.update_y(this.position_y, speed, box_avg, false);
 				break;
 				
 			case UP_DIAG_LEFT:
-				this.position_x = update_x(this.position_x, speed, box_avg, false);
-				this.position_y = update_y(this.position_y, speed, box_avg, true);
+				this.position_x = TGRA_common.update_x(this.position_x, speed, box_avg, false);
+				this.position_y = TGRA_common.update_y(this.position_y, speed, box_avg, true);
 				break; 
 				
 			case DOWN_DIAG_RIGHT:
-				this.position_x = update_x(this.position_x, speed, box_avg, true);
-				this.position_y = update_y(this.position_y, speed, box_avg, false);
+				this.position_x = TGRA_common.update_x(this.position_x, speed, box_avg, true);
+				this.position_y = TGRA_common.update_y(this.position_y, speed, box_avg, false);
 				break;
 		}
 	}
@@ -208,61 +202,5 @@ public class TGRA_part1_core implements ApplicationListener {
 		Gdx.gl11.glColor4f(0.6f, 1.0f, 0.0f, 1.0f);
 		Gdx.gl11.glTranslatef(position_x, position_y, 0);
 		Gdx.gl11.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
-	}
-	
-	/**
-	 * 
-	 * @param pos_x
-	 * @param changeRate
-	 * @param box_avg
-	 * @param flag
-	 * @return
-	 */
-	private float update_x(float pos_x, float changeRate, float box_avg, boolean flag) {
-		
-		float box_left	= pos_x-box_avg;
-		float box_right = pos_x+box_avg;
-		
-		if(flag) {
-			if(box_right+changeRate > Gdx.graphics.getWidth()) {
-				return Gdx.graphics.getWidth()-box_avg;
-			}else {
-				return pos_x += changeRate;
-			}
-		}else {
-			if(box_left-changeRate < 0.0f) {
-				return box_avg;
-			}else {
-				return pos_x -= changeRate;
-			}
-		}
-	}
-	
-	/**
-	 * 
-	 * @param pos_y
-	 * @param changeRate
-	 * @param box_avg
-	 * @param flag
-	 * @return
-	 */
-	private float update_y(float pos_y, float changeRate, float box_avg, boolean flag) {
-		
-		float box_down	= pos_y-box_avg;
-		float box_top	= pos_y+box_avg;
-		
-		if(flag) {
-			if(box_top+changeRate > Gdx.graphics.getHeight()) {
-				return Gdx.graphics.getHeight()-box_avg;
-			}else {
-				return pos_y += changeRate;
-			}
-		}else {
-			if(box_down-changeRate < 0.0f) {
-				return box_avg;
-			}else {
-				return pos_y -= changeRate;
-			}
-		}
 	}
 }
