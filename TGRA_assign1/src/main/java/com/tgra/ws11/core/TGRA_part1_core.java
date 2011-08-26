@@ -21,23 +21,29 @@ import com.badlogic.gdx.utils.BufferUtils;
 
 public class TGRA_part1_core implements ApplicationListener {
 
+	private static final float speed = 3.0f;
 	private float position_x;
 	private float position_y;
 	private float angle;
+	private Action act;
+	private float box_size;
+	private static enum Action { UP, DOWN, LEFT, RIGHT, UP_DIAG_RIGHT, DOWN_DIAG_LEFT, UP_DIAG_LEFT, DOWN_DIAG_RIGHT }
 
 	public void create() {
 
-		position_x = 100.0f;
-		position_y = 100.0f;
-		angle = 45.0f;
-
+		this.position_x = 100.0f;
+		this.position_y = 100.0f;
+		this.angle		= 45.0f;
+		this.box_size	= 50.0f;
+		this.act		= Action.UP_DIAG_RIGHT;
+		
 		Gdx.gl11.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 
 		// set clear color
 		Gdx.gl11.glClearColor(0.4f, 0.6f, 1.0f, 1.0f);
 
 		FloatBuffer vertexBuffer = BufferUtils.newFloatBuffer(8);
-		vertexBuffer.put(new float[] { -50, -50, -50, 50, 50, -50, 50, 50 });
+		vertexBuffer.put(new float[] { -box_size, -box_size, -box_size, box_size, box_size, -box_size, box_size, box_size });
 		vertexBuffer.rewind();
 		Gdx.gl11.glVertexPointer(2, GL10.GL_FLOAT, 0, vertexBuffer);
 	}
@@ -111,32 +117,77 @@ public class TGRA_part1_core implements ApplicationListener {
 
 		Gdx.gl11.glColor4f(0.6f, 0.0f, 0.0f, 1.0f);
 
-		Gdx.gl11.glPushMatrix();
-		Gdx.gl11.glTranslatef(200, 200, 0);
-		Gdx.gl11.glPushMatrix();
-		Gdx.gl11.glScalef(1.5f, 1.5f, 1.0f);
-		Gdx.gl11.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
-		Gdx.gl11.glPopMatrix();
 
-		Gdx.gl11.glPushMatrix();
-		Gdx.gl11.glRotatef(angle, 0, 0, 1);
-		Gdx.gl11.glTranslatef(150, 0, 0);
-		Gdx.gl11.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
-		Gdx.gl11.glPopMatrix();
-
-		Gdx.gl11.glPushMatrix();
-		Gdx.gl11.glRotatef(angle / 2.0f, 0, 0, 1);
-		Gdx.gl11.glTranslatef(0, 300, 0);
-		Gdx.gl11.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
-
-		Gdx.gl11.glPushMatrix();
-		Gdx.gl11.glRotatef(angle, 0, 0, 1);
-		Gdx.gl11.glTranslatef(150, 0, 0);
-		Gdx.gl11.glScalef(0.5f, 0.5f, 1.0f);
-		Gdx.gl11.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
-		Gdx.gl11.glPopMatrix();
-
-		Gdx.gl11.glPopMatrix();
+		float box_avg = box_size/2;
+		
+		if(position_x >= Gdx.graphics.getWidth()) {
+			
+			//case (1,x)
+			act = Action.LEFT;
+			
+			if( position_y >= Gdx.graphics.getHeight() ) {
+				//case (1,1)
+				act = Action.DOWN_DIAG_LEFT;
+			}
+			if( position_y <= 0.0f ) {
+				//case (1,0)
+				act = Action.UP_DIAG_LEFT;
+			}
+		}
+		
+		if(position_x <= 0.0f) {
+			
+			//case (0,x)
+			act = Action.RIGHT;
+			
+			if( position_y >= Gdx.graphics.getHeight() ) {
+				//case (0,1)
+				act = Action.DOWN_DIAG_RIGHT;
+			}
+			if( position_y <= 0.0f ) {
+				//case (0,0)
+				act = Action.UP_DIAG_LEFT;
+			}
+		}
+		
+		switch(act) {
+		
+			case UP:
+				this.position_y += speed;
+				break;
+			
+			case DOWN:
+				this.position_y -= speed;
+				break;
+				
+			case LEFT:
+				this.position_x -= speed;
+				break;
+			
+			case RIGHT:
+				this.position_x += speed;
+				break;
+				
+			case UP_DIAG_RIGHT:
+				this.position_x += speed;
+				this.position_y += speed;
+				break;
+				
+			case DOWN_DIAG_LEFT:
+				this.position_x -= speed;
+				this.position_y -= speed;
+				break;
+				
+			case UP_DIAG_LEFT:
+				this.position_x -= speed;
+				this.position_y += speed;
+				break;
+				
+			case DOWN_DIAG_RIGHT:
+				this.position_x += speed;
+				this.position_y -= speed;
+				break;
+		}
 
 		Gdx.gl11.glColor4f(0.6f, 1.0f, 0.0f, 1.0f);
 		Gdx.gl11.glTranslatef(position_x, position_y, 0);
