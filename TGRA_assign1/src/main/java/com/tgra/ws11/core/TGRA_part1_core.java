@@ -24,18 +24,19 @@ public class TGRA_part1_core implements ApplicationListener {
 	private static final float speed = 3.0f;
 	private float position_x;
 	private float position_y;
-	private Action act;
 	private float box_size;
 	private float box_avg;
-	private static enum Action { UP, DOWN, LEFT, RIGHT, UP_DIAG_RIGHT, DOWN_DIAG_LEFT, UP_DIAG_LEFT, DOWN_DIAG_RIGHT }
+	private boolean direction_x;
+	private boolean direction_y;
 
 	public void create() {
 
-		this.position_x = 100.0f;
-		this.position_y = 100.0f;
-		this.box_size	= 50.0f;
-		this.box_avg	= box_size;
-		this.act		= Action.UP_DIAG_RIGHT;
+		this.position_x 	= 100.0f;
+		this.position_y 	= 100.0f;
+		this.box_size		= 50.0f;
+		this.box_avg		= box_size;
+		this.direction_x	= true;
+		this.direction_y	= true;
 		
 		Gdx.gl11.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 
@@ -83,8 +84,6 @@ public class TGRA_part1_core implements ApplicationListener {
 			
 			position_x = TGRA_common.update_x(Gdx.input.getX()+box_avg, 0.0f, box_avg, true);
 			position_y = TGRA_common.update_y(Gdx.graphics.getHeight() - Gdx.input.getY()+box_avg, 0.0f, box_avg, true);
-			
-			act = Action.UP_DIAG_RIGHT;
 		}
 
 		if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
@@ -108,82 +107,55 @@ public class TGRA_part1_core implements ApplicationListener {
 		
 		if(box_right == Gdx.graphics.getWidth()) {
 			
-			//case (1,x)
-			act = Action.LEFT;
-			
 			if(  box_top >= Gdx.graphics.getHeight() ) {
 				//case (1,1)
-				act = Action.DOWN_DIAG_LEFT;
+				this.direction_x = !direction_x;
+				this.direction_y = !direction_y;
 			}
 			if( box_down <= 0.0f ) {
 				//case (1,0)
-				act = Action.UP_DIAG_LEFT;
+				this.direction_x = !direction_x;
+				this.direction_y = !direction_y;
+			}else {
+				//case (1,x)
+				//inverse the x direction
+				this.direction_x = !direction_x;
 			}
 		}
 		
 		if(box_left == 0.0f) {
-			
-			//case (0,x)
-			act = Action.RIGHT;
-			
 			if( box_top >= Gdx.graphics.getHeight() ) {
 				//case (0,1)
-				act = Action.DOWN_DIAG_RIGHT;
+				this.direction_x = !direction_x;
+				this.direction_y = !direction_y;
 			}
 			if( box_down <= 0.0f ) {
 				//case (0,0)
-				act = Action.UP_DIAG_LEFT;
+				this.direction_x = !direction_x;
+				this.direction_y = !direction_y;
+			}else {
+				//case (0,x)
+				//inverse the x direction
+				this.direction_x = !direction_x;
 			}
 		}
-		
+
 		if(box_top == Gdx.graphics.getHeight()) {
 			//case (x,1)
-			act = Action.DOWN;
+			//inverse the y direction
+			this.direction_y = !direction_y;
 		}
 		
 		if(box_down == 0.0f) {
 			//case (x,0)
-			act = Action.UP;
+			//inverse the y direction
+			this.direction_y = !direction_y;
 		}
 		
-		switch(act) {
 		
-			case UP:
-				this.position_y = TGRA_common.update_y(this.position_y, speed, box_avg, true);
-				break;
-			
-			case DOWN:
-				this.position_y = TGRA_common.update_y(this.position_y, speed, box_avg, false);
-				break;
-				
-			case LEFT:
-					this.position_x = TGRA_common.update_x(this.position_x, speed, box_avg, false);
-				break;
-			
-			case RIGHT:
-					this.position_x = TGRA_common.update_x(this.position_x, speed, box_avg, true);
-				break;
-				
-			case UP_DIAG_RIGHT:
-				this.position_x = TGRA_common.update_x(this.position_x, speed, box_avg, true);
-				this.position_y = TGRA_common.update_y(this.position_y, speed, box_avg, true);
-				break;
-				
-			case DOWN_DIAG_LEFT:
-				this.position_x = TGRA_common.update_x(this.position_x, speed, box_avg, false);
-				this.position_y = TGRA_common.update_y(this.position_y, speed, box_avg, false);
-				break;
-				
-			case UP_DIAG_LEFT:
-				this.position_x = TGRA_common.update_x(this.position_x, speed, box_avg, false);
-				this.position_y = TGRA_common.update_y(this.position_y, speed, box_avg, true);
-				break; 
-				
-			case DOWN_DIAG_RIGHT:
-				this.position_x = TGRA_common.update_x(this.position_x, speed, box_avg, true);
-				this.position_y = TGRA_common.update_y(this.position_y, speed, box_avg, false);
-				break;
-		}
+		// Update coordinates
+		this.position_y = TGRA_common.update_y(this.position_y, speed, box_avg, direction_y);
+		this.position_x = TGRA_common.update_x(this.position_x, speed, box_avg, direction_x);
 	}
 
 	/**
