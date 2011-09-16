@@ -11,7 +11,7 @@ public class DesktopAppLab01Starter {
 	public static void main(String[] args) {
 		
 		// lab01 core
-		new JoglApplication(new TGRA_Lab01Core(), "TGRA - lab01", 1024, 768, false);
+		new JoglApplication(new TGRA_Lab01Core(), "TGRA - lab01 Starter", 1024, 768, false);
 		
 		// part1 core
 		//new JoglApplication(new TGRA_part1_core(), "TGRA - part1", 1024, 768, false);

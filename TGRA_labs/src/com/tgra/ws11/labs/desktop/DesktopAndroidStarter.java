@@ -11,7 +11,7 @@ public class DesktopAndroidStarter {
 	public static void main(String[] args) {
 		
 		// lab01 core
-		new JoglApplication(new Andriod3DLibGTXTestCore(), "TGRA - lab01", 1024, 768, false);
+		new JoglApplication(new Andriod3DLibGTXTestCore(), "TGRA - Android Starter", 1024, 768, false);
 		
 		// part1 core
 		//new JoglApplication(new TGRA_part1_core(), "TGRA - part1", 1024, 768, false);
