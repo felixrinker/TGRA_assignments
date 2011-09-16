@@ -34,7 +34,7 @@ public class TGRA_test01_core implements ApplicationListener {
 		this.direction_x	= true;
 		this.direction_y	= true;
 		
-		Gdx.gl11.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+		Gdx.gl11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
 
 		// set clear color
 		Gdx.gl11.glClearColor(0.4f, 0.6f, 1.0f, 1.0f);
@@ -76,82 +76,21 @@ public class TGRA_test01_core implements ApplicationListener {
 	 * UPDATE CODE
 	 */
 	private void update() {
-		if (Gdx.input.justTouched()) {
-			
-			position_x = TGRA_common.update_x(Gdx.input.getX()+box_avg, 0.0f, box_avg, true);
-			position_y = TGRA_common.update_y(Gdx.graphics.getHeight() - Gdx.input.getY()+box_avg, 0.0f, box_avg, true);
-		}
+		
+		float deltaTime = Gdx.graphics.getDeltaTime();
 
 		if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-			position_x = TGRA_common.update_x(position_x, 5.0f, box_avg, false);
+			position_x += -100.0f * deltaTime;
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-			position_x = TGRA_common.update_x(position_x, 5.0f, box_avg, true);
+			position_x += 100.0f * deltaTime;
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-			position_y = TGRA_common.update_y(position_y, 5.0f, box_avg, false);
+			position_y += -100.0f * deltaTime;
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-			position_y = TGRA_common.update_y(position_y, 5.0f, box_avg, true);
+			position_y += 100.0f * deltaTime;
 		}
-		
-		
-		float box_left	= position_x-box_avg;
-		float box_right = position_x+box_avg;
-		float box_top	= position_y+box_avg;
-		float box_down	= position_y-box_avg;
-		
-		if(box_right == Gdx.graphics.getWidth()) {
-			
-			if(  box_top >= Gdx.graphics.getHeight() ) {
-				//case (1,1)
-				this.direction_x = !direction_x;
-				this.direction_y = !direction_y;
-			}
-			if( box_down <= 0.0f ) {
-				//case (1,0)
-				this.direction_x = !direction_x;
-				this.direction_y = !direction_y;
-			}else {
-				//case (1,x)
-				//inverse the x direction
-				this.direction_x = !direction_x;
-			}
-		}
-		
-		if(box_left == 0.0f) {
-			if( box_top >= Gdx.graphics.getHeight() ) {
-				//case (0,1)
-				this.direction_x = !direction_x;
-				this.direction_y = !direction_y;
-			}
-			if( box_down <= 0.0f ) {
-				//case (0,0)
-				this.direction_x = !direction_x;
-				this.direction_y = !direction_y;
-			}else {
-				//case (0,x)
-				//inverse the x direction
-				this.direction_x = !direction_x;
-			}
-		}
-
-		if(box_top == Gdx.graphics.getHeight()) {
-			//case (x,1)
-			//inverse the y direction
-			this.direction_y = !direction_y;
-		}
-		
-		if(box_down == 0.0f) {
-			//case (x,0)
-			//inverse the y direction
-			this.direction_y = !direction_y;
-		}
-		
-		
-		// Update coordinates
-		this.position_y = TGRA_common.update_y(this.position_y, speed, box_avg, direction_y);
-		this.position_x = TGRA_common.update_x(this.position_x, speed, box_avg, direction_x);
 	}
 
 	/**
