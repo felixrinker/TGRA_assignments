@@ -107,6 +107,12 @@ public class Astroid_core implements ApplicationListener {
 		if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
 			spaceShip.changeSpeed(spaceShip.getSpeedChange() * deltaTime);	
 		}
+		
+		this.spaceShip.update();
+		
+		for( Meteor m : meteorList) {
+			m.update();
+		}
 	}
 
 	/**
@@ -122,18 +128,7 @@ public class Astroid_core implements ApplicationListener {
 		Gdx.gl11.glLoadIdentity();
 		Gdx.glu.gluOrtho2D(Gdx.gl10, 0, Gdx.graphics.getWidth(), 0, Gdx.graphics.getHeight());
 		
-		// draw objects
-		/*for(PrimitiveObject object : createdObjects.values()) {
-			
-			Gdx.gl11.glPushMatrix();
-			Gdx.gl11.glTranslatef(object.getPos().getX(), object.getPos().getY(), 0);
-			this.drawObject(object.getObjectRef());
-			Gdx.gl11.glPopMatrix();
-		}*/
-		
 		this.spaceShip.draw();
-		
-		this.meteor.draw();
 		
 		for( Meteor m : meteorList) {
 			m.draw();
@@ -158,10 +153,6 @@ public class Astroid_core implements ApplicationListener {
 	private void loadLevelOneInitObjects() {
 		
 		meteorList = new ArrayList<Meteor>();
-		
-		this.meteor = new Meteor(20.0f, -170.0f, this.vertexList);
-		this.meteor.setPositionX(300);
-		this.meteor.setPositionY(100);
 		
 		this.meteorList.add(new Meteor(20.0f, -170.0f, 200,100, this.vertexList));
 		this.meteorList.add(new Meteor(15.0f, -170.0f, 800,200, this.vertexList));
