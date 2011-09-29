@@ -8,11 +8,14 @@ import com.badlogic.gdx.graphics.GL11;
 import com.tgra.ws11.core.TransformationMatrix;
 import com.tgra.ws11.structures.ObjectReference;
 import com.tgra.ws11.structures.Point2D;
-
+/**
+ * 
+ * @author Felix Rinker
+ * @author Sara Van de Moosdijk
+ *
+ */
 public class SpaceShip {
 
-	private float width;
-	private float height;
 	private float positionX;
 	private float positionY;
 	private float angle;
@@ -34,21 +37,11 @@ public class SpaceShip {
 		vertexList.add(new Point2D(-width/2.0f, -height/2.0f));
 		vertexList.add(new Point2D(-width/2.0f, height/4.0f));
 	}
-	
 
+	/**
+	 * 
+	 */
 	public void draw() {
-		
-		
-		this.positionX += this.direction[0]*speed;
-		this.positionY += this.direction[1]*speed;
-		
-		if(this.positionX >= Gdx.graphics.getWidth()) {
-			this.positionX = 0;
-		}else if(this.positionX <= 0) this.positionX = Gdx.graphics.getWidth();
-		if(this.positionY >= Gdx.graphics.getHeight()) {
-			this.positionY = 0;
-		}else if(this.positionY <= 0) this.positionY = Gdx.graphics.getHeight();
-		
 		
 		Gdx.gl11.glPushMatrix();
 		Gdx.gl11.glTranslatef(this.positionX, this.positionY, 0);
@@ -59,27 +52,23 @@ public class SpaceShip {
 		Gdx.gl11.glPopMatrix();
 		
 	}
-	public float getWidth() {
-		return width;
+	
+	/**
+	 * 
+	 */
+	public void update() {
+		this.positionX += this.direction[0]*speed;
+		this.positionY += this.direction[1]*speed;
+		
+		if(this.positionX >= Gdx.graphics.getWidth()) {
+			this.positionX = 0;
+		}else if(this.positionX <= 0) this.positionX = Gdx.graphics.getWidth();
+		if(this.positionY >= Gdx.graphics.getHeight()) {
+			this.positionY = 0;
+		}else if(this.positionY <= 0) this.positionY = Gdx.graphics.getHeight();
 	}
-
-
-
-	public void setWidth(float width) {
-		this.width = width;
-	}
-
-
-
-	public float getHeight() {
-		return height;
-	}
-
-
-
-	public void setHeight(float height) {
-		this.height = height;
-	}
+	
+/***************************** GETTER SETTER ***************************************/	
 
 
 	public void setPositionX(float positionX) {
@@ -105,8 +94,6 @@ public class SpaceShip {
 		return angle;
 	}
 
-	
-	
 
 	public float getSpeedChange() {
 		return speedChange;

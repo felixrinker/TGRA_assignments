@@ -10,7 +10,12 @@ import com.tgra.ws11.core.TransformationMatrix;
 import com.tgra.ws11.structures.ObjectReference;
 import com.tgra.ws11.structures.Point2D;
 
-
+/**
+ * 
+ * @author Felix Rinker
+ * @author Sara Van de Moosdijk
+ *
+ */
 public class Meteor {
 
 	private float radius;
@@ -23,27 +28,11 @@ public class Meteor {
 	private ObjectReference objRef;
 	private Vector<Point2D> vertexList;
 	
-	public Meteor (float radius, float angle, Vector<Point2D> vertexList) {
-		this.vertexList = vertexList;
-		this.angle = angle;
-		this.speed= 1.8f;
-		this.slices = 40;
-		this.direction = new float[]{1.5f, 0f, 0f, 0f};
-		
-		objRef = new ObjectReference(vertexList.size(),slices,GL11.GL_TRIANGLE_FAN);
-		for(float f=0; f<2*Math.PI; f+=(float)2*Math.PI/(float)slices) {
-			vertexList.add(new Point2D((float)Math.cos(f)*radius,(float)Math.sin(f)*radius));
-		}
-		
-		this.direction = TransformationMatrix.multiplyVectorAndMatrix(TransformationMatrix.getRotationMatrix(angle), direction);	}
 	
-	public Meteor (float radius, float angle, float positionX, float positionY, Vector<Point2D> vertexList) {
-		
-		this.positionX = positionX;
-		this.positionY = positionY;		
-		this.vertexList = vertexList;
+	public Meteor (float radius, float angle, Vector<Point2D> vertexList) {
+		this.radius = radius;
 		this.angle = angle;
-		
+		this.vertexList = vertexList;
 		this.speed= 1.8f;
 		this.slices = 40;
 		this.direction = new float[]{1.5f, 0f, 0f, 0f};
@@ -56,8 +45,24 @@ public class Meteor {
 		this.direction = TransformationMatrix.multiplyVectorAndMatrix(TransformationMatrix.getRotationMatrix(angle), direction);
 	}
 	
+	public Meteor (float radius, float angle, float positionX, float positionY, Vector<Point2D> vertexList) {
+		
+		this(radius, angle, vertexList);
+		
+		this.positionX = positionX;
+		this.positionY = positionY;
+	}
+	
 	public void draw() {
 		
+		Gdx.gl11.glPushMatrix();
+		Gdx.gl11.glTranslatef(this.positionX, this.positionY, 0);
+		Gdx.gl11.glDrawArrays(objRef.getOpenGLPrimitiveType(), objRef.getFirstIndex(), objRef.getVertexCount());
+		Gdx.gl11.glPopMatrix();
+		
+	}
+	
+	public void update () {
 		
 		this.positionX += this.direction[0]*speed;
 		this.positionY += this.direction[1]*speed;
@@ -68,17 +73,9 @@ public class Meteor {
 		if(this.positionY >= Gdx.graphics.getHeight()) {
 			this.positionY = 0;
 		}else if(this.positionY <= 0) this.positionY = Gdx.graphics.getHeight();
-		
-		
-		Gdx.gl11.glPushMatrix();
-		Gdx.gl11.glTranslatef(this.positionX, this.positionY, 0);
-		
-		//Gdx.gl11.glMultMatrixf(TransformationMatrix.getRotationMatrix(angle), 0);
-		
-		Gdx.gl11.glDrawArrays(objRef.getOpenGLPrimitiveType(), objRef.getFirstIndex(), objRef.getVertexCount());
-		Gdx.gl11.glPopMatrix();
-		
 	}
+	
+	/***************************** GETTER SETTER ***************************************/		
 	public float getWidth() {
 		return radius;
 	}
