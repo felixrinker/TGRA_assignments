@@ -1,6 +1,7 @@
 package com.tgra.ws11.core;
 
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
@@ -10,6 +11,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.utils.BufferUtils;
+import com.tgra.ws11.model.Meteor;
 import com.tgra.ws11.model.SpaceShip;
 import com.tgra.ws11.structures.ObjectPosition;
 import com.tgra.ws11.structures.ObjectReference;
@@ -25,8 +27,9 @@ import com.tgra.ws11.structures.PrimitiveObject;
 public class Astroid_core implements ApplicationListener {
 
 	private Vector<Point2D> vertexList;
-	private Map<String, PrimitiveObject> createdObjects;
 	private SpaceShip spaceShip;
+	private Meteor meteor;
+	private ArrayList<Meteor> meteorList;
 	
 	public void create() {
 
@@ -99,10 +102,10 @@ public class Astroid_core implements ApplicationListener {
 			spaceShip.changeAngle(+180.0f*deltaTime);
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-			spaceShip.addToY(-0.3f * deltaTime);
+			spaceShip.changeSpeed(-spaceShip.getSpeedChange() * deltaTime);
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-			spaceShip.addToY(0.3f * deltaTime);	
+			spaceShip.changeSpeed(spaceShip.getSpeedChange() * deltaTime);	
 		}
 	}
 
@@ -129,17 +132,13 @@ public class Astroid_core implements ApplicationListener {
 		}*/
 		
 		this.spaceShip.draw();
+		
+		this.meteor.draw();
+		
+		for( Meteor m : meteorList) {
+			m.draw();
+		}
 	}
-	
-	
-	/**
-	 * 
-	 * @param objRef
-	 */
-	private void drawObject(ObjectReference objRef) {
-	       Gdx.gl11.glDrawArrays(objRef.getOpenGLPrimitiveType(), objRef.getFirstIndex(), objRef.getVertexCount());
-	}
-	
 	
 	/**
 	 * creates the init objects
@@ -151,21 +150,26 @@ public class Astroid_core implements ApplicationListener {
 		spaceShip = new SpaceShip(20, 40, this.vertexList);
 		spaceShip.setPositionX(300);
 		spaceShip.setPositionY(400);
-	}
-	
-	/**
-	 * 
-	 * @param objectRef to the object
-	 * @param x position
-	 * @param y position
-	 * 
-	 * @return PrimitiveObject
-	 */
-	private PrimitiveObject createPrimitveObjectAtPos(ObjectReference objectRef, float x, float y) {
 		
-		return new PrimitiveObject(objectRef, new ObjectPosition(x,y));
+		loadLevelOneInitObjects();
+		
 	}
 	
+	private void loadLevelOneInitObjects() {
+		
+		meteorList = new ArrayList<Meteor>();
+		
+		this.meteor = new Meteor(20.0f, -170.0f, this.vertexList);
+		this.meteor.setPositionX(300);
+		this.meteor.setPositionY(100);
+		
+		this.meteorList.add(new Meteor(20.0f, -170.0f, 200,100, this.vertexList));
+		this.meteorList.add(new Meteor(15.0f, -170.0f, 800,200, this.vertexList));
+		this.meteorList.add(new Meteor(10.0f, -170.0f, 400,700, this.vertexList));
+		this.meteorList.add(new Meteor(10.0f, -170.0f, 600,500, this.vertexList));
+		this.meteorList.add(new Meteor(05.0f, -170.0f, 150,200, this.vertexList));
+		
+	}
 	
 /************************************* OBJECTS ***********************************************/
 	
