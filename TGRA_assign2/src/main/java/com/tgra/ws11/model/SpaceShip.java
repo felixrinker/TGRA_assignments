@@ -5,9 +5,9 @@ import java.util.Vector;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL11;
 
-import com.tgra.ws11.core.TransformationMatrix;
 import com.tgra.ws11.structures.ObjectReference;
 import com.tgra.ws11.structures.Point2D;
+import com.tgra.ws11.structures.TransformationMatrix;
 /**
  * 
  * @author Felix Rinker
@@ -76,7 +76,7 @@ public class SpaceShip {
 	 * @return new bullet
 	 */
 	public Bullet fireBullet() {
-		Bullet bullet = new Bullet(7,3, this.positionX, this.positionY, this.angle, this.direction, this.vertexList);
+		Bullet bullet = new Bullet(7,3, this.positionX, this.positionY, this.angle, this.direction, this.speed, this.vertexList);
 		
 		return bullet;
 	}

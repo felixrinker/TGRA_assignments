@@ -1,8 +1,15 @@
-package com.tgra.ws11.core;
+package com.tgra.ws11.structures;
+
+/**
+ * 
+ * @author Felix Rinker
+ * @author Sara Van de Moosdijk
+ *
+ */
 public class TransformationMatrix {
 
-	public static float[] getIdentityMatrix()
-	{
+	public static float[] getIdentityMatrix() {
+		
 		float[] M = new float[16];
 		M[0] = 1;				M[4] = 0;				M[8]	= 0;	M[12]	= 0;
 		M[1] = 0;				M[5] = 1;				M[9]	= 0;	M[13]	= 0;
@@ -12,8 +19,16 @@ public class TransformationMatrix {
 		return M;
 	}
 
-	public static float[] multiplyVectorAndMatrix(float[] M, float[] V)
-	{
+	/**
+	 * multiply Vector and Matrix
+	 * 
+	 * @param M matrix
+	 * @param V vector
+	 * 
+	 * @return multiplied Matrix
+	 */
+	public static float[] multiplyVectorAndMatrix(float[] M, float[] V) {
+		
 		float[] result = new float[4];
 		
 		result[0] = M[0]*V[0] + M[4]*V[1] + M[8]*V[2] + M[12]*V[3];
@@ -24,7 +39,15 @@ public class TransformationMatrix {
 		return result;
 	}
 	
+	/**
+	 * 
+	 * @param M matrix 1
+	 * @param M2 matrix 2
+	 * 
+	 * @return multiplied matrix
+	 */
 	public static float[] multiplyMatrix(float[] M, float[] M2) {
+		
 		float[] result = new float[16];
 
 		
@@ -54,7 +77,13 @@ public class TransformationMatrix {
 		return result;
 	}
 	
+	/**
+	 * 
+	 * @param angle
+	 * @return
+	 */
 	public static float[] rotationMatrix(float angle) {
+		
 		float[] matrix = TransformationMatrix.getIdentityMatrix();
 
 		matrix[0] = (float) Math.cos(angle * 3.1415f/180.0f);	matrix[4] = (float) -Math.sin(angle * 3.1415f/180.0f);	matrix[12]	= 0;

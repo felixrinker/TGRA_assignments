@@ -3,6 +3,12 @@ package com.tgra.ws11.desktop;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.tgra.ws11.core.Astroid_core;
 
+/**
+ * 
+ * @author Felix Rinker
+ * @author Sara Van de Moosdijk
+ *
+ */
 public class AstroidAppStarter {
 
 	/**

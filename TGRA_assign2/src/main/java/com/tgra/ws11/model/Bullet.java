@@ -6,10 +6,10 @@ import java.util.Vector;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL11;
 
-import com.tgra.ws11.core.TransformationMatrix;
 
 import com.tgra.ws11.structures.ObjectReference;
 import com.tgra.ws11.structures.Point2D;
+import com.tgra.ws11.structures.TransformationMatrix;
 
 /**
  * 
@@ -26,6 +26,8 @@ public class Bullet {
 	private float[] direction;
 	private float speed;
 	private ObjectReference objRef;
+	private long creationTime;
+	private long lifeTime;
 	
 	/**
 	 * 
@@ -36,6 +38,8 @@ public class Bullet {
 	public Bullet (float width, float height, Vector<Point2D> vertexList) {
 		this.speed= 0.5f;
 		this.angle = 90f;
+		this.lifeTime = 4000;
+		this.creationTime = System.currentTimeMillis();
 		this.direction = new float[]{speed, 0f, 0f, 0f};
 		
 		objRef = new ObjectReference(vertexList.size(),4,GL11.GL_TRIANGLE_STRIP);
@@ -61,15 +65,25 @@ public class Bullet {
 		this.positionY = positionY;
 	}
 	
-	public Bullet (float width, float height, float positionX, float positionY, float angle, float[] direction, Vector<Point2D> vertexList) {
+	/**
+	 * 
+	 * @param width
+	 * @param height
+	 * @param positionX
+	 * @param positionY
+	 * @param angle
+	 * @param direction
+	 * @param speed
+	 * @param vertexList
+	 */
+	public Bullet (float width, float height, float positionX, float positionY, float angle, float[] direction, float speed, Vector<Point2D> vertexList) {
 		
 		
 		this(width, height, positionX, positionY, vertexList);
 		
 		this.angle += angle;
-		
+		this.speed += speed;
 		this.direction = TransformationMatrix.multiplyVectorAndMatrix(TransformationMatrix.getIdentityMatrix(), direction);
-		//this.direction = TransformationMatrix.multiplyMatrix(TransformationMatrix.getIdentityMatrix(), TransformationMatrix.rotationMatrix(angle));
 	}
 	
 	/**
@@ -99,6 +113,21 @@ public class Bullet {
 		if(this.positionY >= Gdx.graphics.getHeight()) {
 			this.positionY = 0;
 		}else if(this.positionY <= 0) this.positionY = Gdx.graphics.getHeight();
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public boolean checkLife() {
+		
+		float deltaTime = Gdx.graphics.getDeltaTime();
+		long diff = lifeTime+(long)deltaTime;
+		
+		if(System.currentTimeMillis() < this.creationTime+diff) {
+			return true;
+		}
+		return false;
 	}
 	
 	/***************************** GETTER SETTER ***************************************/		
@@ -141,22 +170,6 @@ public class Bullet {
 
 	public float getPositionY() {
 		return positionY;
-	}
-
-
-	public float getAngle() {
-		return angle;
-	}
-
-
-	public void changeAngle(float angle) {
-		this.angle += angle;
-		this.direction = TransformationMatrix.multiplyVectorAndMatrix(TransformationMatrix.rotationMatrix(angle), direction);
-		
-	}
-	
-	public void changeSpeed(float speed) {
-		this.speed += speed;
 	}
 
 	@Override
