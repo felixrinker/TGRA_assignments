@@ -10,6 +10,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.utils.BufferUtils;
+import com.tgra.ws11.model.SpaceShip;
 import com.tgra.ws11.structures.ObjectPosition;
 import com.tgra.ws11.structures.ObjectReference;
 import com.tgra.ws11.structures.Point2D;
@@ -25,13 +26,14 @@ public class Astroid_core implements ApplicationListener {
 
 	private Vector<Point2D> vertexList;
 	private Map<String, PrimitiveObject> createdObjects;
+	private SpaceShip spaceShip;
 	
 	public void create() {
 
 		this.vertexList		= new Vector<Point2D>();
 		
 		// create and load init objects
-		this.createdObjects	= loadInitObjects();
+		loadInitObjects();
 		
 		// load vertexList to vertexBuffer
 		int floatBufferSize			= vertexList.size() * 2;
@@ -42,6 +44,7 @@ public class Astroid_core implements ApplicationListener {
 		      vertexArray[i*2]	 = vertexList.get(i).getX();
 		      vertexArray[i*2+1] = vertexList.get(i).getY();
 		}
+		
 		vertexBuffer.put(vertexArray);
 		vertexBuffer.rewind();
 		Gdx.gl11.glVertexPointer(2, GL11.GL_FLOAT, 0, vertexBuffer);
@@ -49,7 +52,7 @@ public class Astroid_core implements ApplicationListener {
 		Gdx.gl11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
 
 		// set clear color
-		Gdx.gl11.glClearColor(0.4f, 0.6f, 1.0f, 1.0f);
+		Gdx.gl11.glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 	}
 	
 	public void dispose() {
@@ -87,19 +90,19 @@ public class Astroid_core implements ApplicationListener {
 		float deltaTime = Gdx.graphics.getDeltaTime();
 
 		// get object to update
-		PrimitiveObject littleBox = this.createdObjects.get("littleBox");
+		//PrimitiveObject littleBox = this.createdObjects.get("spaceShip");
 		
 		if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {	
-			littleBox.getPos().addToX(-100.0f * deltaTime);
+			spaceShip.changeAngle(-180.0f*deltaTime);
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-			littleBox.getPos().addToX(100.0f * deltaTime);
+			spaceShip.changeAngle(+180.0f*deltaTime);
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-			littleBox.getPos().addToY(-100.0f * deltaTime);
+			spaceShip.addToY(-0.3f * deltaTime);
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-			littleBox.getPos().addToY(100.0f * deltaTime);	
+			spaceShip.addToY(0.3f * deltaTime);	
 		}
 	}
 
@@ -108,7 +111,7 @@ public class Astroid_core implements ApplicationListener {
 	 */
 	private void display() {
 		
-		Gdx.gl11.glClearColor(0.4f, 0.6f, 1.0f, 1.0f);
+		Gdx.gl11.glClearColor(0.0f,0.0f,0.2f,1.0f);
 		Gdx.gl11.glClear(GL11.GL_COLOR_BUFFER_BIT);
 
 		Gdx.gl11.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -117,13 +120,15 @@ public class Astroid_core implements ApplicationListener {
 		Gdx.glu.gluOrtho2D(Gdx.gl10, 0, Gdx.graphics.getWidth(), 0, Gdx.graphics.getHeight());
 		
 		// draw objects
-		for(PrimitiveObject object : createdObjects.values()) {
+		/*for(PrimitiveObject object : createdObjects.values()) {
 			
 			Gdx.gl11.glPushMatrix();
 			Gdx.gl11.glTranslatef(object.getPos().getX(), object.getPos().getY(), 0);
 			this.drawObject(object.getObjectRef());
 			Gdx.gl11.glPopMatrix();
-		}
+		}*/
+		
+		this.spaceShip.draw();
 	}
 	
 	
@@ -141,14 +146,11 @@ public class Astroid_core implements ApplicationListener {
 	 * 
 	 * @return a HashMap with then names (ID) and objects
 	 */
-	private HashMap<String, PrimitiveObject> loadInitObjects() {
+	private void loadInitObjects() {
 		
-		HashMap<String, PrimitiveObject> objects = new HashMap<String, PrimitiveObject>();
-		
-		objects.put("littleBox", createPrimitveObjectAtPos(PrimitiveType.createBox(50, 50, vertexList), 50, 50));
-		objects.put("bigBox", createPrimitveObjectAtPos(PrimitiveType.createBox(200, 200, vertexList), 500, 500));
-		
-		return objects;
+		spaceShip = new SpaceShip(20, 40, this.vertexList);
+		spaceShip.setPositionX(300);
+		spaceShip.setPositionY(400);
 	}
 	
 	/**
@@ -163,4 +165,8 @@ public class Astroid_core implements ApplicationListener {
 		
 		return new PrimitiveObject(objectRef, new ObjectPosition(x,y));
 	}
+	
+	
+/************************************* OBJECTS ***********************************************/
+	
 }

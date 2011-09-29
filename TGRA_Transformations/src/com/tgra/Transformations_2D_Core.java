@@ -151,7 +151,7 @@ public class Transformations_2D_Core implements ApplicationListener {
 
 		//Gdx.gl11.glTranslatef(4.0f, 6.0f, 0.0f);
 		//Gdx.gl11.glRotatef(angle, 0.0f, 0.0f, 1.0f);
-		Gdx.gl11.glMultMatrixf(TransformationMatrix.multiply(MT, TransformationMatrix.multiply(MR, Mshear)), 0);
+		Gdx.gl11.glMultMatrixf(TransformationMatrix.multiply(MT, TransformationMatrix.multiply(MT, Mshear)), 0);
 
 		drawCoordinateFrame();
 		drawBox();

@@ -70,13 +70,14 @@ public class Game implements ApplicationListener{
 				//System.out.println(number);
 			//}
 			speed += 2.0f*deltaTime;
-			travelSC = TransformationMatrix.multiplyVector(MS, travelSC);
+			//travelSC = TransformationMatrix.multiplyVector(MS, travelSC);
 			//for(Float number: travelSC) {
 				//System.out.println(number);
 			//}
 		}
 		else {
 			speed -= 0.2f*deltaTime;
+		//
 			travelSC = TransformationMatrix.multiplyVector(MS, travelSC);
 		}
 		
