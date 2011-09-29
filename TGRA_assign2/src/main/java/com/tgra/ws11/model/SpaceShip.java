@@ -45,10 +45,9 @@ public class SpaceShip {
 	public void draw() {
 		
 		Gdx.gl11.glPushMatrix();
+		Gdx.gl11.glColor4f(0f, 0f, 0.9f, 1.0f);
 		Gdx.gl11.glTranslatef(this.positionX, this.positionY, 0);
-		
 		Gdx.gl11.glMultMatrixf(TransformationMatrix.getRotationMatrix(angle), 0);
-		
 		Gdx.gl11.glDrawArrays(objRef.getOpenGLPrimitiveType(), objRef.getFirstIndex(), objRef.getVertexCount());
 		Gdx.gl11.glPopMatrix();
 		

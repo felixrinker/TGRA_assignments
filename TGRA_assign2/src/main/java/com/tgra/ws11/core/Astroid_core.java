@@ -11,6 +11,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.utils.BufferUtils;
+import com.tgra.ws11.model.Bullet;
 import com.tgra.ws11.model.Meteor;
 import com.tgra.ws11.model.SpaceShip;
 import com.tgra.ws11.structures.ObjectPosition;
@@ -30,6 +31,7 @@ public class Astroid_core implements ApplicationListener {
 	private SpaceShip spaceShip;
 	private Meteor meteor;
 	private ArrayList<Meteor> meteorList;
+	private Bullet bullet;
 	
 	public void create() {
 
@@ -109,6 +111,7 @@ public class Astroid_core implements ApplicationListener {
 		}
 		
 		this.spaceShip.update();
+		this.bullet.update();
 		
 		for( Meteor m : meteorList) {
 			m.update();
@@ -129,6 +132,8 @@ public class Astroid_core implements ApplicationListener {
 		Gdx.glu.gluOrtho2D(Gdx.gl10, 0, Gdx.graphics.getWidth(), 0, Gdx.graphics.getHeight());
 		
 		this.spaceShip.draw();
+		
+		this.bullet.draw();
 		
 		for( Meteor m : meteorList) {
 			m.draw();
@@ -154,11 +159,13 @@ public class Astroid_core implements ApplicationListener {
 		
 		meteorList = new ArrayList<Meteor>();
 		
-		this.meteorList.add(new Meteor(20.0f, -170.0f, 200,100, this.vertexList));
-		this.meteorList.add(new Meteor(15.0f, -170.0f, 800,200, this.vertexList));
+		//this.meteorList.add(new Meteor(20.0f, -170.0f, 200,100, this.vertexList));
+		//this.meteorList.add(new Meteor(15.0f, -170.0f, 800,200, this.vertexList));
 		this.meteorList.add(new Meteor(10.0f, -170.0f, 400,700, this.vertexList));
 		this.meteorList.add(new Meteor(10.0f, -170.0f, 600,500, this.vertexList));
 		this.meteorList.add(new Meteor(05.0f, -170.0f, 150,200, this.vertexList));
+		
+		this.bullet = new Bullet(7,3, 500,500, this.vertexList);
 		
 	}
 	
