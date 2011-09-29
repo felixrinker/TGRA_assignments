@@ -14,7 +14,7 @@ import com.tgra.ws11.structures.TransformationMatrix;
 /**
  * 
  * @author Felix Rinker
- * @author Sara Van de Moosdijk
+ * @author Sara van de Moosdijk
  *
  */
 public class Bullet {
@@ -38,7 +38,7 @@ public class Bullet {
 	public Bullet (float width, float height, Vector<Point2D> vertexList) {
 		this.speed= 0.5f;
 		this.angle = 90f;
-		this.lifeTime = 4000;
+		this.lifeTime = 3000;
 		this.creationTime = System.currentTimeMillis();
 		this.direction = new float[]{speed, 0f, 0f, 0f};
 		

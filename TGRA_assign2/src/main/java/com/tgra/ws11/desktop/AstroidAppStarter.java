@@ -6,7 +6,7 @@ import com.tgra.ws11.core.Astroid_core;
 /**
  * 
  * @author Felix Rinker
- * @author Sara Van de Moosdijk
+ * @author Sara van de Moosdijk
  *
  */
 public class AstroidAppStarter {

@@ -11,11 +11,13 @@ import com.tgra.ws11.structures.TransformationMatrix;
 /**
  * 
  * @author Felix Rinker
- * @author Sara Van de Moosdijk
+ * @author Sara van de Moosdijk
  *
  */
 public class SpaceShip {
 
+	private float width;
+	private float height;
 	private float positionX;
 	private float positionY;
 	private float angle;
@@ -27,7 +29,8 @@ public class SpaceShip {
 	
 	public SpaceShip (float width, float height, Vector<Point2D> vertexList) {
 		objRef = new ObjectReference(vertexList.size(), 6, GL11.GL_TRIANGLE_FAN);
-		
+		this.width = width;
+		this.height = height;
 		this.vertexList = vertexList;
 		this.speed= 1.5f;
 		this.angle = -90f;
@@ -76,14 +79,16 @@ public class SpaceShip {
 	 * @return new bullet
 	 */
 	public Bullet fireBullet() {
-		Bullet bullet = new Bullet(7,3, this.positionX, this.positionY, this.angle, this.direction, this.speed, this.vertexList);
+		Bullet bullet = new Bullet(5,3, this.positionX, this.positionY, this.angle, this.direction, this.speed, this.vertexList);
 		
 		return bullet;
 	}
 	
 /***************************** GETTER SETTER ***************************************/	
 
-
+	public float getWidth() {return this.width;}
+	public float getHeight() {return this.height;}
+	
 	public void setPositionX(float positionX) {
 		this.positionX = positionX;
 	}

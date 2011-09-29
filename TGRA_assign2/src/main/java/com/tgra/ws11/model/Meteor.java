@@ -13,7 +13,7 @@ import com.tgra.ws11.structures.TransformationMatrix;
 /**
  * 
  * @author Felix Rinker
- * @author Sara Van de Moosdijk
+ * @author Sara van de Moosdijk
  *
  */
 public class Meteor {
@@ -147,5 +147,9 @@ public class Meteor {
 	
 	public void changeSpeed(float speed) {
 		this.speed += speed;
+	}
+	
+	public float getRadius() {
+		return this.radius;
 	}
 }

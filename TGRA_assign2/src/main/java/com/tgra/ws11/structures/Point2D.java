@@ -3,6 +3,7 @@ package com.tgra.ws11.structures;
 /**
  * 
  * @author Felix Rinker
+ * @author Sara van de Moosdijk
  *
  */
 public class Point2D {

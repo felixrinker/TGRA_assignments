@@ -3,7 +3,7 @@ package com.tgra.ws11.structures;
 /**
  * 
  * @author Felix Rinker
- * @author Sara Van de Moosdijk
+ * @author Sara van de Moosdijk
  *
  */
 public class TransformationMatrix {
