@@ -26,10 +26,11 @@ public class SpaceShip {
 	
 	public SpaceShip (float width, float height, Vector<Point2D> vertexList) {
 		objRef = new ObjectReference(vertexList.size(), 6, GL11.GL_TRIANGLE_FAN);
-		this.speed= 1.0f;
+		this.speed= 1.5f;
 		this.angle = -90f;
 		this.speedChange = 1.0f;
-		this.direction = new float[]{1.5f, 0f, 0f, 0f};
+		
+		this.direction = new float[]{speed, 0f, 0f, 0f};
 		vertexList.add(new Point2D(-width/4.0f, height/2.0f));
 		vertexList.add(new Point2D(width/4.0f, height/2.0f));
 		vertexList.add(new Point2D(width/2.0f, height/4.0f));

@@ -26,16 +26,19 @@ public class Meteor {
 	private float speed;
 	private int slices;
 	private ObjectReference objRef;
-	private Vector<Point2D> vertexList;
 	
-	
+	/**
+	 * 
+	 * @param radius
+	 * @param angle
+	 * @param vertexList
+	 */
 	public Meteor (float radius, float angle, Vector<Point2D> vertexList) {
 		this.radius = radius;
 		this.angle = angle;
-		this.vertexList = vertexList;
-		this.speed= 1.8f;
+		this.speed= 0.5f;
 		this.slices = 40;
-		this.direction = new float[]{1.5f, 0f, 0f, 0f};
+		this.direction = new float[]{speed, 0f, 0f, 0f};
 		
 		objRef = new ObjectReference(vertexList.size(),slices,GL11.GL_TRIANGLE_FAN);
 		for(float f=0; f<2*Math.PI; f+=(float)2*Math.PI/(float)slices) {
@@ -45,6 +48,14 @@ public class Meteor {
 		this.direction = TransformationMatrix.multiplyVectorAndMatrix(TransformationMatrix.getRotationMatrix(angle), direction);
 	}
 	
+	/**
+	 * 
+	 * @param radius
+	 * @param angle
+	 * @param positionX
+	 * @param positionY
+	 * @param vertexList
+	 */
 	public Meteor (float radius, float angle, float positionX, float positionY, Vector<Point2D> vertexList) {
 		
 		this(radius, angle, vertexList);
@@ -53,6 +64,9 @@ public class Meteor {
 		this.positionY = positionY;
 	}
 	
+	/**
+	 * 
+	 */
 	public void draw() {
 		
 		Gdx.gl11.glPushMatrix();
@@ -61,7 +75,9 @@ public class Meteor {
 		Gdx.gl11.glPopMatrix();
 		
 	}
-	
+	/**
+	 * 
+	 */
 	public void update () {
 		
 		this.positionX += this.direction[0]*speed;
