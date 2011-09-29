@@ -29,18 +29,29 @@ public class Astroid_core implements ApplicationListener {
 
 	private Vector<Point2D> vertexList;
 	private SpaceShip spaceShip;
-	private Meteor meteor;
 	private ArrayList<Meteor> meteorList;
-	private Bullet bullet;
+	private ArrayList<Bullet> bulletList;
+	private boolean bullet;
 	
 	public void create() {
 
 		this.vertexList		= new Vector<Point2D>();
+		this.bulletList		= new ArrayList<Bullet>();
+		this.bullet = false;
 		
 		// create and load init objects
 		loadInitObjects();
 		
 		// load vertexList to vertexBuffer
+		loadVertexList();
+		
+		Gdx.gl11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
+
+		// set clear color
+		Gdx.gl11.glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+	}
+	
+	private void loadVertexList() {
 		int floatBufferSize			= vertexList.size() * 2;
 		FloatBuffer vertexBuffer	= BufferUtils.newFloatBuffer(floatBufferSize);
 		float[] vertexArray			= new float[floatBufferSize];
@@ -52,12 +63,8 @@ public class Astroid_core implements ApplicationListener {
 		
 		vertexBuffer.put(vertexArray);
 		vertexBuffer.rewind();
+		
 		Gdx.gl11.glVertexPointer(2, GL11.GL_FLOAT, 0, vertexBuffer);
-
-		Gdx.gl11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
-
-		// set clear color
-		Gdx.gl11.glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 	}
 	
 	public void dispose() {
@@ -93,15 +100,12 @@ public class Astroid_core implements ApplicationListener {
 	private void update() {
 		
 		float deltaTime = Gdx.graphics.getDeltaTime();
-
-		// get object to update
-		//PrimitiveObject littleBox = this.createdObjects.get("spaceShip");
 		
 		if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {	
-			spaceShip.changeAngle(-180.0f*deltaTime);
+			spaceShip.changeAngle(180.0f*deltaTime);
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-			spaceShip.changeAngle(+180.0f*deltaTime);
+			spaceShip.changeAngle(-180.0f*deltaTime);
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
 			spaceShip.changeSpeed(-spaceShip.getSpeedChange() * deltaTime);
@@ -110,11 +114,25 @@ public class Astroid_core implements ApplicationListener {
 			spaceShip.changeSpeed(spaceShip.getSpeedChange() * deltaTime);	
 		}
 		
+		if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+			
+			//if(!bullet) {
+				this.bulletList.add(spaceShip.fireBullet());
+				loadVertexList();
+				bullet = true;
+			//}
+		}
+		
+		
+		
 		this.spaceShip.update();
-		this.bullet.update();
 		
 		for( Meteor m : meteorList) {
 			m.update();
+		}
+		
+		for(Bullet b : bulletList) {
+			b.update();
 		}
 	}
 
@@ -133,10 +151,12 @@ public class Astroid_core implements ApplicationListener {
 		
 		this.spaceShip.draw();
 		
-		this.bullet.draw();
-		
 		for( Meteor m : meteorList) {
 			m.draw();
+		}
+		
+		for(Bullet b : bulletList) {
+			b.draw();
 		}
 	}
 	
@@ -165,7 +185,7 @@ public class Astroid_core implements ApplicationListener {
 		this.meteorList.add(new Meteor(10.0f, -170.0f, 600,500, this.vertexList));
 		this.meteorList.add(new Meteor(05.0f, -170.0f, 150,200, this.vertexList));
 		
-		this.bullet = new Bullet(7,3, 500,500, this.vertexList);
+		
 		
 	}
 	

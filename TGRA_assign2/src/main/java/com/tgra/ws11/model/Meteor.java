@@ -45,7 +45,7 @@ public class Meteor {
 			vertexList.add(new Point2D((float)Math.cos(f)*radius,(float)Math.sin(f)*radius));
 		}
 		
-		this.direction = TransformationMatrix.multiplyVectorAndMatrix(TransformationMatrix.getRotationMatrix(angle), direction);
+		this.direction = TransformationMatrix.multiplyVectorAndMatrix(TransformationMatrix.rotationMatrix(angle), direction);
 	}
 	
 	/**
@@ -142,7 +142,7 @@ public class Meteor {
 
 	public void changeAngle(float angle) {
 		this.angle += angle;
-		this.direction = TransformationMatrix.multiplyVectorAndMatrix(TransformationMatrix.getRotationMatrix(angle), direction);
+		this.direction = TransformationMatrix.multiplyVectorAndMatrix(TransformationMatrix.rotationMatrix(angle), direction);
 	}
 	
 	public void changeSpeed(float speed) {

@@ -1,5 +1,6 @@
 package com.tgra.ws11.model;
 
+import java.util.Arrays;
 import java.util.Vector;
 
 import com.badlogic.gdx.Gdx;
@@ -34,6 +35,7 @@ public class Bullet {
 	 */
 	public Bullet (float width, float height, Vector<Point2D> vertexList) {
 		this.speed= 0.5f;
+		this.angle = 90f;
 		this.direction = new float[]{speed, 0f, 0f, 0f};
 		
 		objRef = new ObjectReference(vertexList.size(),4,GL11.GL_TRIANGLE_STRIP);
@@ -41,24 +43,33 @@ public class Bullet {
 		vertexList.add(new Point2D(-width/2.0f, -height/2.0f));
 		vertexList.add(new Point2D(width/2.0f, height/2.0f));
 		vertexList.add(new Point2D(width/2.0f, -height/2.0f));
-	
-		this.direction = TransformationMatrix.multiplyVectorAndMatrix(TransformationMatrix.getRotationMatrix(angle), direction);
 	}
 	
 	/**
 	 * 
-	 * @param radius
+	 * @param width
 	 * @param angle
 	 * @param positionX
 	 * @param positionY
 	 * @param vertexList
 	 */
-	public Bullet (float radius, float angle, float positionX, float positionY, Vector<Point2D> vertexList) {
+	public Bullet (float width, float height, float positionX, float positionY, Vector<Point2D> vertexList) {
 		
-		this(radius, angle, vertexList);
+		this(width, height, vertexList);
 		
 		this.positionX = positionX;
 		this.positionY = positionY;
+	}
+	
+	public Bullet (float width, float height, float positionX, float positionY, float angle, float[] direction, Vector<Point2D> vertexList) {
+		
+		
+		this(width, height, positionX, positionY, vertexList);
+		
+		this.angle += angle;
+		
+		this.direction = TransformationMatrix.multiplyVectorAndMatrix(TransformationMatrix.getIdentityMatrix(), direction);
+		//this.direction = TransformationMatrix.multiplyMatrix(TransformationMatrix.getIdentityMatrix(), TransformationMatrix.rotationMatrix(angle));
 	}
 	
 	/**
@@ -69,6 +80,7 @@ public class Bullet {
 		Gdx.gl11.glPushMatrix();
 		Gdx.gl11.glColor4f(1.0f, 0.5f, 0.5f, 1.0f);
 		Gdx.gl11.glTranslatef(this.positionX, this.positionY, 0);
+		Gdx.gl11.glMultMatrixf(TransformationMatrix.rotationMatrix(angle), 0);
 		Gdx.gl11.glDrawArrays(objRef.getOpenGLPrimitiveType(), objRef.getFirstIndex(), objRef.getVertexCount());
 		Gdx.gl11.glPopMatrix();	
 	}
@@ -139,10 +151,19 @@ public class Bullet {
 
 	public void changeAngle(float angle) {
 		this.angle += angle;
-		this.direction = TransformationMatrix.multiplyVectorAndMatrix(TransformationMatrix.getRotationMatrix(angle), direction);
+		this.direction = TransformationMatrix.multiplyVectorAndMatrix(TransformationMatrix.rotationMatrix(angle), direction);
+		
 	}
 	
 	public void changeSpeed(float speed) {
 		this.speed += speed;
+	}
+
+	@Override
+	public String toString() {
+		return "Bullet [radius=" + radius + ", positionX=" + positionX
+				+ ", positionY=" + positionY + ", angle=" + angle
+				+ ", direction=" + Arrays.toString(direction) + ", speed="
+				+ speed + ", objRef=" + objRef + "]";
 	}
 }

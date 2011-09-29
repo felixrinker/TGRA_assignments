@@ -23,9 +23,12 @@ public class SpaceShip {
 	private float speed;
 	private float speedChange;
 	private ObjectReference objRef;
+	private Vector<Point2D> vertexList;
 	
 	public SpaceShip (float width, float height, Vector<Point2D> vertexList) {
 		objRef = new ObjectReference(vertexList.size(), 6, GL11.GL_TRIANGLE_FAN);
+		
+		this.vertexList = vertexList;
 		this.speed= 1.5f;
 		this.angle = -90f;
 		this.speedChange = 1.0f;
@@ -47,7 +50,7 @@ public class SpaceShip {
 		Gdx.gl11.glPushMatrix();
 		Gdx.gl11.glColor4f(0f, 0f, 0.9f, 1.0f);
 		Gdx.gl11.glTranslatef(this.positionX, this.positionY, 0);
-		Gdx.gl11.glMultMatrixf(TransformationMatrix.getRotationMatrix(angle), 0);
+		Gdx.gl11.glMultMatrixf(TransformationMatrix.rotationMatrix(angle), 0);
 		Gdx.gl11.glDrawArrays(objRef.getOpenGLPrimitiveType(), objRef.getFirstIndex(), objRef.getVertexCount());
 		Gdx.gl11.glPopMatrix();
 		
@@ -66,6 +69,16 @@ public class SpaceShip {
 		if(this.positionY >= Gdx.graphics.getHeight()) {
 			this.positionY = 0;
 		}else if(this.positionY <= 0) this.positionY = Gdx.graphics.getHeight();
+	}
+	
+	/**
+	 * 
+	 * @return new bullet
+	 */
+	public Bullet fireBullet() {
+		Bullet bullet = new Bullet(7,3, this.positionX, this.positionY, this.angle, this.direction, this.vertexList);
+		
+		return bullet;
 	}
 	
 /***************************** GETTER SETTER ***************************************/	
@@ -107,7 +120,7 @@ public class SpaceShip {
 
 	public void changeAngle(float angle) {
 		this.angle += angle;
-		this.direction = TransformationMatrix.multiplyVectorAndMatrix(TransformationMatrix.getRotationMatrix(angle), direction);
+		this.direction = TransformationMatrix.multiplyVectorAndMatrix(TransformationMatrix.rotationMatrix(angle), direction);
 	}
 	
 	public void changeSpeed(float speed) {
