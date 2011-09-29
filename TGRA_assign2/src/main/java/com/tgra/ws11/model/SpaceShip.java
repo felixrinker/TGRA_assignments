@@ -18,12 +18,14 @@ public class SpaceShip {
 	private float angle;
 	float[] direction;
 	private float speed;
+	private float speedChange;
 	private ObjectReference objRef;
 	
 	public SpaceShip (float width, float height, Vector<Point2D> vertexList) {
 		objRef = new ObjectReference(vertexList.size(), 6, GL11.GL_TRIANGLE_FAN);
 		this.speed= 1.0f;
 		this.angle = -90f;
+		this.speedChange = 1.0f;
 		this.direction = new float[]{1.5f, 0f, 0f, 0f};
 		vertexList.add(new Point2D(-width/4.0f, height/2.0f));
 		vertexList.add(new Point2D(width/4.0f, height/2.0f));
@@ -80,13 +82,6 @@ public class SpaceShip {
 	}
 
 
-
-	public float getPositionX() {
-		return positionX;
-	}
-
-
-
 	public void setPositionX(float positionX) {
 		this.positionX = positionX;
 	}
@@ -97,14 +92,9 @@ public class SpaceShip {
 	}
 
 
-	public void addToX(float positionX) {
-		this.speed += positionX;
+	public float getPositionX() {
+		return positionX;
 	}
-
-	public void addToY(float positionY) {
-		this.speed -= positionY;
-	}
-
 
 	public float getPositionY() {
 		return positionY;
@@ -115,9 +105,25 @@ public class SpaceShip {
 		return angle;
 	}
 
+	
+	
+
+	public float getSpeedChange() {
+		return speedChange;
+	}
+
+
+	public void setSpeedChange(float speedChange) {
+		this.speedChange = speedChange;
+	}
+
 
 	public void changeAngle(float angle) {
 		this.angle += angle;
 		this.direction = TransformationMatrix.multiplyVectorAndMatrix(TransformationMatrix.getRotationMatrix(angle), direction);
+	}
+	
+	public void changeSpeed(float speed) {
+		this.speed += speed;
 	}
 }
