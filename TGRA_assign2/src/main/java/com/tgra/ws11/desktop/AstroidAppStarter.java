@@ -16,6 +16,6 @@ public class AstroidAppStarter {
 	 */
 	public static void main(String[] args) {
 		
-		new LwjglApplication(new Astroid_core(), "TGRA - part1", 1024, 768, false);
+		LwjglApplication aaa = new LwjglApplication(new Astroid_core(), "TGRA - part1", 1024, 768, false);
 	}
 }

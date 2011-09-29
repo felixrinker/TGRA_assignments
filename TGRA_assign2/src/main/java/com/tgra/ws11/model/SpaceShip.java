@@ -32,7 +32,7 @@ public class SpaceShip {
 		this.width = width;
 		this.height = height;
 		this.vertexList = vertexList;
-		this.speed= 1.5f;
+		this.speed= 5.0f;
 		this.angle = -90f;
 		this.speedChange = 1.0f;
 		
@@ -63,8 +63,9 @@ public class SpaceShip {
 	 * 
 	 */
 	public void update() {
-		this.positionX += this.direction[0]*speed;
-		this.positionY += this.direction[1]*speed;
+		float deltaTime = Gdx.graphics.getDeltaTime();
+		this.positionX += this.direction[0]*(speed*deltaTime);
+		this.positionY += this.direction[1]*(speed*deltaTime);
 		
 		if(this.positionX >= Gdx.graphics.getWidth()) {
 			this.positionX = 0;
@@ -124,8 +125,9 @@ public class SpaceShip {
 
 
 	public void changeAngle(float angle) {
-		this.angle += angle;
-		this.direction = TransformationMatrix.multiplyVectorAndMatrix(TransformationMatrix.rotationMatrix(angle), direction);
+		float deltaTime = Gdx.graphics.getDeltaTime();
+		this.angle += angle*deltaTime;
+		this.direction = TransformationMatrix.multiplyVectorAndMatrix(TransformationMatrix.rotationMatrix(this.angle), direction);
 	}
 	
 	public void changeSpeed(float speed) {

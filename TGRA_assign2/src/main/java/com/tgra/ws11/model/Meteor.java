@@ -36,16 +36,17 @@ public class Meteor {
 	public Meteor (float radius, float angle, Vector<Point2D> vertexList) {
 		this.radius = radius;
 		this.angle = angle;
-		this.speed= 0.5f;
-		this.slices = 40;
-		this.direction = new float[]{speed, 0f, 0f, 0f};
+		this.speed= 1.5f;
+		this.slices = 20;
+		
+		this.direction = new float[]{speed, 1.0f, 0f, 0f};
 		
 		objRef = new ObjectReference(vertexList.size(),slices,GL11.GL_TRIANGLE_FAN);
 		for(float f=0; f<2*Math.PI; f+=(float)2*Math.PI/(float)slices) {
 			vertexList.add(new Point2D((float)Math.cos(f)*radius,(float)Math.sin(f)*radius));
 		}
 		
-		this.direction = TransformationMatrix.multiplyVectorAndMatrix(TransformationMatrix.rotationMatrix(angle), direction);
+		this.direction = TransformationMatrix.multiplyVectorAndMatrix(TransformationMatrix.rotationMatrix(this.angle), direction);
 	}
 	
 	/**
@@ -93,28 +94,6 @@ public class Meteor {
 	}
 	
 	/***************************** GETTER SETTER ***************************************/		
-	public float getWidth() {
-		return radius;
-	}
-
-
-
-	public void setWidth(float width) {
-		this.radius = width;
-	}
-
-
-
-	public float getHeight() {
-		return angle;
-	}
-
-
-
-	public void setHeight(float height) {
-		this.angle = height;
-	}
-
 
 	public void setPositionX(float positionX) {
 		this.positionX = positionX;

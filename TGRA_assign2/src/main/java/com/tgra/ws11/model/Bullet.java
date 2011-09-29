@@ -84,8 +84,8 @@ public class Bullet {
 		
 		
 		this(width, height, positionX, positionY, vertexList);
-		
-		this.angle += angle;
+		float deltaTime = Gdx.graphics.getDeltaTime();
+		this.angle += angle*deltaTime;
 		this.speed += speed;
 		this.direction = TransformationMatrix.multiplyVectorAndMatrix(TransformationMatrix.getIdentityMatrix(), direction);
 	}
@@ -108,8 +108,10 @@ public class Bullet {
 	 */
 	public void update () {
 		
-		this.positionX += this.direction[0]*speed;
-		this.positionY += this.direction[1]*speed;
+		float deltaTime = Gdx.graphics.getDeltaTime();
+		
+		this.positionX += this.direction[0]*speed*deltaTime;
+		this.positionY += this.direction[1]*speed*deltaTime;
 		
 		if(this.positionX >= Gdx.graphics.getWidth()) {
 			this.positionX = 0;

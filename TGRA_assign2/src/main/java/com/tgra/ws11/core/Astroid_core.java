@@ -1,13 +1,19 @@
 package com.tgra.ws11.core;
 
+import java.awt.Window;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.Vector;
 
+import javax.swing.JOptionPane;
+
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.graphics.GL11;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.tgra.ws11.model.Bullet;
 import com.tgra.ws11.model.Meteor;
@@ -24,18 +30,27 @@ import com.tgra.ws11.structures.TransformationMatrix;
 
 public class Astroid_core implements ApplicationListener {
 
-	private int level=1;
-	private boolean gameOver = false;
+	private int level =1;
+	private boolean gameOver;
 	private Vector<Point2D> vertexList;
 	private SpaceShip spaceShip;
 	private ArrayList<Meteor> meteorList;
 	private ArrayList<Bullet> bulletList;
 	private long lastBulletShot;
+	private SpriteBatch batch;
+	private BitmapFont font;
 	
 	public void create() {
 
 		this.vertexList		= new Vector<Point2D>();
 		this.bulletList		= new ArrayList<Bullet>();
+		
+        this.batch = new SpriteBatch();
+        this.font = new BitmapFont();
+        
+       // this.level = 1;
+        this.gameOver = false;
+		
 		
 		// create and load init objects
 		loadInitObjects();
@@ -96,126 +111,128 @@ public class Astroid_core implements ApplicationListener {
 	 * UPDATE CODE
 	 */
 	private void update() {
-		
-		if(meteorList.isEmpty()) {
-			level=2;
-			create();
-		}
-		
-		float deltaTime = Gdx.graphics.getDeltaTime();
-		
-		if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {	
-			spaceShip.changeAngle(180.0f*deltaTime);
-		}
-		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-			spaceShip.changeAngle(-180.0f*deltaTime);
-		}
-		if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-			spaceShip.changeSpeed(-spaceShip.getSpeedChange() * deltaTime);
-		}
-		if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-			spaceShip.changeSpeed(spaceShip.getSpeedChange() * deltaTime);	
-		}
-		
-		if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+		if(gameOver) {
 			
-			if(this.checkNextShot()) {
-				this.bulletList.add(spaceShip.fireBullet());
-				loadVertexList();
-				this.setLastShotTime(System.currentTimeMillis());
+			// if enter is pressed
+			if(Gdx.input.isKeyPressed(Input.Keys.ENTER)) {
+				this.level = 1;
+				this.gameOver = false;
+				this.create();	
 			}
-		}
-
-		// update ship object
-		this.spaceShip.update();
-		
-		/** 
-		 * iterates over the meteors and call the update
-		 * Checks if the distance between a meteor and a bullet is larger than
-		 * the combined radius and size.
-		 * If not, delete both.
-		 * 
-		 * @TODO add score point to meteor
-		 */
-		ArrayList<Bullet> deleteBullets = new ArrayList<Bullet>();
-		ArrayList<Meteor> deleteMeteors = new ArrayList<Meteor>();
-		
-		//These two lines of code calculate the width and height of the spaceship based on angle.
-		float[] rotatedWH = {spaceShip.getWidth(),spaceShip.getHeight(),0,0};
-		rotatedWH = TransformationMatrix.multiplyVectorAndMatrix(TransformationMatrix.rotationMatrix(spaceShip.getAngle()),rotatedWH);
-		for( Meteor m : meteorList) {
 			
-			//FIRST DETECT BULLET COLLISIONS
-			for(Bullet b: bulletList) {
+		}else {
+			
+		
+			if(meteorList.isEmpty()) {
+				level=2;
+				create();
+			}
+			
+			float deltaTime = Gdx.graphics.getDeltaTime();
+			
+			if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {	
+				spaceShip.changeAngle(180.0f*deltaTime);
+			}
+			if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+				spaceShip.changeAngle(-180.0f*deltaTime);
+			}
+			if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+				spaceShip.changeSpeed(-spaceShip.getSpeedChange()* deltaTime);
+			}
+			if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+				spaceShip.changeSpeed(spaceShip.getSpeedChange() * deltaTime);	
+			}
+			
+			if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
 				
-				if(b.checkLife()) {
+				if(this.checkNextShot()) {
+					this.bulletList.add(spaceShip.fireBullet());
+					loadVertexList();
+					this.setLastShotTime(System.currentTimeMillis());
+				}
+			}
+	
+			// update ship object
+			this.spaceShip.update();
+			
+			/** 
+			 * iterates over the meteors and call the update
+			 * Checks if the distance between a meteor and a bullet is larger than
+			 * the combined radius and size.
+			 * If not, delete both.
+			 * 
+			 * @TODO add score point to meteor
+			 */
+			ArrayList<Bullet> deleteBullets = new ArrayList<Bullet>();
+			ArrayList<Meteor> deleteMeteors = new ArrayList<Meteor>();
+			
+			//These two lines of code calculate the width and height of the spaceship based on angle.
+			float[] rotatedWH = {spaceShip.getWidth(),spaceShip.getHeight(),0,0};
+			rotatedWH = TransformationMatrix.multiplyVectorAndMatrix(TransformationMatrix.rotationMatrix(spaceShip.getAngle()),rotatedWH);
+			for( Meteor m : meteorList) {
 				
-					//Calculate distances between meteor and bullet
-					float dx = Math.abs(m.getPositionX()-b.getPositionX());
-					float dy = Math.abs(m.getPositionY()-b.getPositionY());
+				//FIRST DETECT BULLET COLLISIONS
+				for(Bullet b: bulletList) {
 					
-					//Calculate how small the distance can be for non-collision
-					float minX = m.getRadius()+(b.getWidth()/2);
-					float minY = m.getRadius()+(b.getHeight()/2);
+					if(b.checkLife()) {
 					
-					//Check if the distances are smaller than the minimum
-					if(dx<minX && dy<minY) {
-						//If so, mark meteor and bullet for deletion
-						deleteMeteors.add(m);
-						deleteBullets.add(b);
+						//Calculate distances between meteor and bullet
+						float dx = Math.abs(m.getPositionX()-b.getPositionX());
+						float dy = Math.abs(m.getPositionY()-b.getPositionY());
 						
+						//Calculate how small the distance can be for non-collision
+						float minX = m.getRadius()+(b.getWidth()/2);
+						float minY = m.getRadius()+(b.getHeight()/2);
+						
+						//Check if the distances are smaller than the minimum
+						if(dx<minX && dy<minY) {
+							//If so, mark meteor and bullet for deletion
+							deleteMeteors.add(m);
+							deleteBullets.add(b);
+							
+						}else {
+							b.update();
+						}
 					}else {
-						b.update();
+						deleteBullets.add(b);
 					}
-				}else {
-					deleteBullets.add(b);
 				}
-			}
-			
-			//THEN DETECT SPACESHIP COLLISION
-			//calculate the distance between the xcoord and ycoord of the meteors and spaceship
-			float dxSS = Math.abs(m.getPositionX()-spaceShip.getPositionX());
-			float dySS = Math.abs(m.getPositionY()-spaceShip.getPositionY());
-			
-			//calculate the minimum distance before collision occurs
-			float minXSS = m.getRadius()+(rotatedWH[0]/2);
-			float minYSS = m.getRadius()+(rotatedWH[1]/2);
-			
-			//if distance is below minimum, the game is over
-			if(dxSS<minXSS && dySS<minYSS) {
-				gameOver=true;
-			}
-			
-			//THEN DETECT OTHER METEOR COLLISION
-			for(Meteor m2: meteorList) {
-				float dxM = Math.abs(m.getPositionX()-m2.getPositionX());
-				float dyM = Math.abs(m.getPositionY()-m2.getPositionY());
-				float minM = m.getRadius()+m2.getRadius();
-				if(dxM<minM && dyM<minM) {
-					m.changeAngle(-m.getAngle());
-					m2.changeAngle(-m2.getAngle());
+				
+				//THEN DETECT SPACESHIP COLLISION
+				//calculate the distance between the xcoord and ycoord of the meteors and spaceship
+				float dxSS = Math.abs(m.getPositionX()-spaceShip.getPositionX());
+				float dySS = Math.abs(m.getPositionY()-spaceShip.getPositionY());
+				
+				//calculate the minimum distance before collision occurs
+				//float minXSS = m.getRadius()+(spaceShip.getWidth()/2);
+				//float minYSS = m.getRadius()+(spaceShip.getHeight()/2);
+				
+				
+				float minXSS = m.getRadius()+(rotatedWH[0]/2);
+				float minYSS = m.getRadius()+(rotatedWH[1]/2);
+				
+				//if distance is below minimum, the game is over
+				if(dxSS<minXSS && dySS<minYSS) {
+					gameOver=true;
 				}
+				
+				//THEN DETECT OTHER METEOR COLLISION
+				for(Meteor m2: meteorList) {
+					float dxM = Math.abs(m.getPositionX()-m2.getPositionX());
+					float dyM = Math.abs(m.getPositionY()-m2.getPositionY());
+					float minM = m.getRadius()+m2.getRadius();
+					if(dxM<minM && dyM<minM) {
+						m.changeAngle(-m.getAngle());
+						m2.changeAngle(-m2.getAngle());
+					}
+				}
+				
+				m.update();
 			}
 			
-			m.update();
+			bulletList.removeAll(deleteBullets);
+			meteorList.removeAll(deleteMeteors);
 		}
-		
-		bulletList.removeAll(deleteBullets);
-		meteorList.removeAll(deleteMeteors);
-		
-		/**
-		 * iterates over the bullets and call the update
-		 * if the lifetime of the bullet is over delete it.
-		 * 
-		 */
-		/*for(Bullet b : bulletList) {
-			
-			if(b.checkLife()) {
-				b.update();
-			}else {
-				deleteBullets.add(b);
-			}
-		}*/
 	}
 
 	/**
@@ -232,16 +249,26 @@ public class Astroid_core implements ApplicationListener {
 		Gdx.glu.gluOrtho2D(Gdx.gl10, 0, Gdx.graphics.getWidth(), 0, Gdx.graphics.getHeight());
 		
 		if(!gameOver) {
-		this.spaceShip.draw();
-		
-		for( Meteor m : meteorList) {
-			m.draw();
-		}
-		
-		for(Bullet b : bulletList) {
-			b.draw();
-		}
-		}
+			this.spaceShip.draw();
+			
+			for( Meteor m : meteorList) {
+				m.draw();
+			}
+			
+			for(Bullet b : bulletList) {
+				b.draw();
+			}
+		}else {
+				//Gdx.gl.glClear(GL11.GL_COLOR_BUFFER_BIT);
+	           // batch.begin();
+	            font.setColor(0.9f, 0.0f, 1.0f, 1.0f);
+	            font.setScale(4.0f);
+	            font.draw(batch, "Game Over", 330, 500);
+	            font.setScale(2.0f);
+	            font.setColor(0.9f, 1.0f, 1.0f, 1.0f);
+	            font.draw(batch, "Press Enter to restart", 330, 300);
+	          //  batch.end();
+			}
 	}
 	
 	/**
@@ -269,11 +296,11 @@ public class Astroid_core implements ApplicationListener {
 		
 		meteorList = new ArrayList<Meteor>();
 		
-		//this.meteorList.add(new Meteor(20.0f, -170.0f, 200,100, this.vertexList));
-		//this.meteorList.add(new Meteor(15.0f, -170.0f, 800,200, this.vertexList));
-		this.meteorList.add(new Meteor(10.0f, -170.0f, 400,700, this.vertexList));
-		this.meteorList.add(new Meteor(10.0f, -170.0f, 600,500, this.vertexList));
-		this.meteorList.add(new Meteor(05.0f, -170.0f, 150,200, this.vertexList));
+		this.meteorList.add(new Meteor(20.0f, -1.0f, 200,100, this.vertexList));
+		this.meteorList.add(new Meteor(15.0f, -1.0f, 800,200, this.vertexList));
+		this.meteorList.add(new Meteor(10.0f, -1.0f, 400,700, this.vertexList));
+		this.meteorList.add(new Meteor(10.0f, -140.0f, 600,500, this.vertexList));
+		this.meteorList.add(new Meteor(05.0f, -180.0f, 150,200, this.vertexList));
 		
 	}
 	
