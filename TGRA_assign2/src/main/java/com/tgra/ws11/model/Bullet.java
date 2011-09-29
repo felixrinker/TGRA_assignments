@@ -28,6 +28,8 @@ public class Bullet {
 	private ObjectReference objRef;
 	private long creationTime;
 	private long lifeTime;
+	private float width;
+	private float height;
 	
 	/**
 	 * 
@@ -36,6 +38,8 @@ public class Bullet {
 	 * @param vertexList
 	 */
 	public Bullet (float width, float height, Vector<Point2D> vertexList) {
+		this.width = width;
+		this.height = height;
 		this.speed= 0.5f;
 		this.angle = 90f;
 		this.lifeTime = 3000;
@@ -131,33 +135,29 @@ public class Bullet {
 	}
 	
 	/***************************** GETTER SETTER ***************************************/		
-	public float getWidth() {
-		return radius;
-	}
 
-
-
-	public void setWidth(float width) {
-		this.radius = width;
-	}
-
-
-
-	public float getHeight() {
-		return angle;
-	}
-
-
-
-	public void setHeight(float height) {
-		this.angle = height;
-	}
-
+	
 
 	public void setPositionX(float positionX) {
 		this.positionX = positionX;
 	}
 
+
+	public float getWidth() {
+		return width;
+	}
+
+	public void setWidth(float width) {
+		this.width = width;
+	}
+
+	public float getHeight() {
+		return height;
+	}
+
+	public void setHeight(float height) {
+		this.height = height;
+	}
 
 	public void setPositionY(float positionY) {
 		this.positionY = positionY;

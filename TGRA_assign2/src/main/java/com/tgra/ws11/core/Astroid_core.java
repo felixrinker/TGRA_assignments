@@ -139,37 +139,53 @@ public class Astroid_core implements ApplicationListener {
 		 */
 		ArrayList<Bullet> deleteBullets = new ArrayList<Bullet>();
 		ArrayList<Meteor> deleteMeteors = new ArrayList<Meteor>();
+		
 		//These two lines of code calculate the width and height of the spaceship based on angle.
 		float[] rotatedWH = {spaceShip.getWidth(),spaceShip.getHeight(),0,0};
 		rotatedWH = TransformationMatrix.multiplyVectorAndMatrix(TransformationMatrix.rotationMatrix(spaceShip.getAngle()),rotatedWH);
 		for( Meteor m : meteorList) {
-			m.update();
+			
 			//FIRST DETECT BULLET COLLISIONS
 			for(Bullet b: bulletList) {
-				//Calculate distances between meteor and bullet
-				float dx = Math.abs(m.getPositionX()-b.getPositionX());
-				float dy = Math.abs(m.getPositionY()-b.getPositionY());
-				//Calculate how small the distance can be for non-collision
-				float minX = m.getRadius()+(b.getWidth()/2);
-				float minY = m.getRadius()+(b.getHeight()/2);
-				//Check if the distances are smaller than the minimum
-				if(dx<minX && dy<minY) {
-					//If so, mark meteor and bullet for deletion
-					deleteMeteors.add(m);
+				
+				if(b.checkLife()) {
+				
+					//Calculate distances between meteor and bullet
+					float dx = Math.abs(m.getPositionX()-b.getPositionX());
+					float dy = Math.abs(m.getPositionY()-b.getPositionY());
+					
+					//Calculate how small the distance can be for non-collision
+					float minX = m.getRadius()+(b.getWidth()/2);
+					float minY = m.getRadius()+(b.getHeight()/2);
+					
+					//Check if the distances are smaller than the minimum
+					if(dx<minX && dy<minY) {
+						//If so, mark meteor and bullet for deletion
+						deleteMeteors.add(m);
+						deleteBullets.add(b);
+						
+					}else {
+						b.update();
+					}
+				}else {
 					deleteBullets.add(b);
 				}
 			}
+			
 			//THEN DETECT SPACESHIP COLLISION
 			//calculate the distance between the xcoord and ycoord of the meteors and spaceship
 			float dxSS = Math.abs(m.getPositionX()-spaceShip.getPositionX());
 			float dySS = Math.abs(m.getPositionY()-spaceShip.getPositionY());
+			
 			//calculate the minimum distance before collision occurs
 			float minXSS = m.getRadius()+(rotatedWH[0]/2);
 			float minYSS = m.getRadius()+(rotatedWH[1]/2);
+			
 			//if distance is below minimum, the game is over
 			if(dxSS<minXSS && dySS<minYSS) {
 				gameOver=true;
 			}
+			
 			//THEN DETECT OTHER METEOR COLLISION
 			for(Meteor m2: meteorList) {
 				float dxM = Math.abs(m.getPositionX()-m2.getPositionX());
@@ -180,24 +196,26 @@ public class Astroid_core implements ApplicationListener {
 					m2.changeAngle(-m2.getAngle());
 				}
 			}
+			
+			m.update();
 		}
+		
+		bulletList.removeAll(deleteBullets);
+		meteorList.removeAll(deleteMeteors);
 		
 		/**
 		 * iterates over the bullets and call the update
 		 * if the lifetime of the bullet is over delete it.
 		 * 
 		 */
-		for(Bullet b : bulletList) {
+		/*for(Bullet b : bulletList) {
 			
 			if(b.checkLife()) {
 				b.update();
 			}else {
 				deleteBullets.add(b);
 			}
-		}
-		
-		bulletList.removeAll(deleteBullets);
-		meteorList.removeAll(deleteMeteors);
+		}*/
 	}
 
 	/**
