@@ -32,11 +32,11 @@ public class SpaceShip {
 		this.width = width;
 		this.height = height;
 		this.vertexList = vertexList;
-		this.speed= 5.0f;
+		this.speed= 20.0f;
 		this.angle = -90f;
-		this.speedChange = 1.0f;
+		this.speedChange = 5.0f;
 		
-		this.direction = new float[]{speed, 0f, 0f, 0f};
+		this.direction = new float[]{0f, speed, 0f, 0f};
 		vertexList.add(new Point2D(-width/4.0f, height/2.0f));
 		vertexList.add(new Point2D(width/4.0f, height/2.0f));
 		vertexList.add(new Point2D(width/2.0f, height/4.0f));
@@ -50,12 +50,12 @@ public class SpaceShip {
 	 */
 	public void draw() {
 		
-		Gdx.gl11.glPushMatrix();
-		Gdx.gl11.glColor4f(0f, 0f, 0.9f, 1.0f);
-		Gdx.gl11.glTranslatef(this.positionX, this.positionY, 0);
-		Gdx.gl11.glMultMatrixf(TransformationMatrix.rotationMatrix(angle), 0);
-		Gdx.gl11.glDrawArrays(objRef.getOpenGLPrimitiveType(), objRef.getFirstIndex(), objRef.getVertexCount());
-		Gdx.gl11.glPopMatrix();
+		Gdx.gl10.glPushMatrix();
+		Gdx.gl10.glColor4f(0f, 0f, 0.9f, 1.0f);
+		Gdx.gl10.glTranslatef(this.positionX, this.positionY, 0);
+		Gdx.gl10.glMultMatrixf(TransformationMatrix.rotationMatrix(angle), 0);
+		Gdx.gl10.glDrawArrays(objRef.getOpenGLPrimitiveType(), objRef.getFirstIndex(), objRef.getVertexCount());
+		Gdx.gl10.glPopMatrix();
 		
 	}
 	
@@ -63,9 +63,11 @@ public class SpaceShip {
 	 * 
 	 */
 	public void update() {
+		this.direction = TransformationMatrix.multiplyVectorAndMatrix(TransformationMatrix.rotationMatrix(this.angle), new float[]{0f, this.speed, 0f, 0f});
+		
 		float deltaTime = Gdx.graphics.getDeltaTime();
-		this.positionX += this.direction[0]*(speed*deltaTime);
-		this.positionY += this.direction[1]*(speed*deltaTime);
+		this.positionX += this.direction[0]*deltaTime;
+		this.positionY += this.direction[1]*deltaTime;
 		
 		if(this.positionX >= Gdx.graphics.getWidth()) {
 			this.positionX = 0;
@@ -73,6 +75,7 @@ public class SpaceShip {
 		if(this.positionY >= Gdx.graphics.getHeight()) {
 			this.positionY = 0;
 		}else if(this.positionY <= 0) this.positionY = Gdx.graphics.getHeight();
+		
 	}
 	
 	/**
@@ -125,9 +128,8 @@ public class SpaceShip {
 
 
 	public void changeAngle(float angle) {
-		float deltaTime = Gdx.graphics.getDeltaTime();
-		this.angle += angle*deltaTime;
-		this.direction = TransformationMatrix.multiplyVectorAndMatrix(TransformationMatrix.rotationMatrix(this.angle), direction);
+		this.angle += angle;
+		
 	}
 	
 	public void changeSpeed(float speed) {

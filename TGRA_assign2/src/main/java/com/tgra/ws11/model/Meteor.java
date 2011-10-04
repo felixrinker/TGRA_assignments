@@ -36,7 +36,7 @@ public class Meteor {
 	public Meteor (float radius, float angle, Vector<Point2D> vertexList) {
 		this.radius = radius;
 		this.angle = angle;
-		this.speed= 1.5f;
+		this.speed= 80.5f;
 		this.slices = 20;
 		
 		this.direction = new float[]{speed, 1.0f, 0f, 0f};
@@ -70,11 +70,11 @@ public class Meteor {
 	 */
 	public void draw() {
 		
-		Gdx.gl11.glPushMatrix();
-		Gdx.gl11.glColor4f(0.9f, 0.9f, 0.9f, 1.0f);
-		Gdx.gl11.glTranslatef(this.positionX, this.positionY, 0);
-		Gdx.gl11.glDrawArrays(objRef.getOpenGLPrimitiveType(), objRef.getFirstIndex(), objRef.getVertexCount());
-		Gdx.gl11.glPopMatrix();
+		Gdx.gl10.glPushMatrix();
+		Gdx.gl10.glColor4f(0.9f, 0.9f, 0.9f, 1.0f);
+		Gdx.gl10.glTranslatef(this.positionX, this.positionY, 0);
+		Gdx.gl10.glDrawArrays(objRef.getOpenGLPrimitiveType(), objRef.getFirstIndex(), objRef.getVertexCount());
+		Gdx.gl10.glPopMatrix();
 		
 	}
 	/**
@@ -82,8 +82,10 @@ public class Meteor {
 	 */
 	public void update () {
 		
-		this.positionX += this.direction[0]*speed;
-		this.positionY += this.direction[1]*speed;
+		float deltaTime = Gdx.graphics.getDeltaTime();
+		
+		this.positionX += this.direction[0]*deltaTime;
+		this.positionY += this.direction[1]*deltaTime;
 		
 		if(this.positionX >= Gdx.graphics.getWidth()) {
 			this.positionX = 0;
@@ -126,6 +128,7 @@ public class Meteor {
 	
 	public void changeSpeed(float speed) {
 		this.speed += speed;
+		this.direction = TransformationMatrix.multiplyVectorAndMatrix(TransformationMatrix.rotationMatrix(this.angle), direction);
 	}
 	
 	public float getRadius() {

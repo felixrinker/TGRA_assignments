@@ -1,17 +1,13 @@
 package com.tgra.ws11.core;
 
-import java.awt.Window;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.Vector;
 
-import javax.swing.JOptionPane;
-
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Input.TextInputListener;
-import com.badlogic.gdx.graphics.GL11;
+import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.BufferUtils;
@@ -50,18 +46,20 @@ public class Astroid_core implements ApplicationListener {
         
        // this.level = 1;
         this.gameOver = false;
-		
-		
+      
+        
 		// create and load init objects
 		loadInitObjects();
 		
 		// load vertexList to vertexBuffer
 		loadVertexList();
 		
-		Gdx.gl11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
-
+		Gdx.gl10.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+		
+		Gdx.gl10.glClear(0);
+		
 		// set clear color
-		Gdx.gl11.glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+		Gdx.gl10.glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 	}
 	
 	private void loadVertexList() {
@@ -77,7 +75,7 @@ public class Astroid_core implements ApplicationListener {
 		vertexBuffer.put(vertexArray);
 		vertexBuffer.rewind();
 		
-		Gdx.gl11.glVertexPointer(2, GL11.GL_FLOAT, 0, vertexBuffer);
+		Gdx.gl10.glVertexPointer(2, GL10.GL_FLOAT, 0, vertexBuffer);
 	}
 	
 	public void dispose() {
@@ -117,7 +115,7 @@ public class Astroid_core implements ApplicationListener {
 			if(Gdx.input.isKeyPressed(Input.Keys.ENTER)) {
 				this.level = 1;
 				this.gameOver = false;
-				this.create();	
+				System.exit(0);
 			}
 			
 		}else {
@@ -125,22 +123,19 @@ public class Astroid_core implements ApplicationListener {
 		
 			if(meteorList.isEmpty()) {
 				level=2;
-				create();
 			}
-			
-			float deltaTime = Gdx.graphics.getDeltaTime();
 			
 			if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {	
-				spaceShip.changeAngle(180.0f*deltaTime);
+				spaceShip.changeAngle(2.0f);
 			}
 			if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-				spaceShip.changeAngle(-180.0f*deltaTime);
+				spaceShip.changeAngle(-2.0f);
 			}
 			if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-				spaceShip.changeSpeed(-spaceShip.getSpeedChange()* deltaTime);
+				spaceShip.changeSpeed(-spaceShip.getSpeedChange());
 			}
 			if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-				spaceShip.changeSpeed(spaceShip.getSpeedChange() * deltaTime);	
+				spaceShip.changeSpeed(spaceShip.getSpeedChange());	
 			}
 			
 			if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
@@ -204,12 +199,12 @@ public class Astroid_core implements ApplicationListener {
 				float dySS = Math.abs(m.getPositionY()-spaceShip.getPositionY());
 				
 				//calculate the minimum distance before collision occurs
-				//float minXSS = m.getRadius()+(spaceShip.getWidth()/2);
-				//float minYSS = m.getRadius()+(spaceShip.getHeight()/2);
+				float minXSS = m.getRadius()+(spaceShip.getWidth()/2);
+				float minYSS = m.getRadius()+(spaceShip.getHeight()/2);
 				
 				
-				float minXSS = m.getRadius()+(rotatedWH[0]/2);
-				float minYSS = m.getRadius()+(rotatedWH[1]/2);
+				//float minXSS = m.getRadius()+(rotatedWH[0]/2);
+				//float minYSS = m.getRadius()+(rotatedWH[1]/2);
 				
 				//if distance is below minimum, the game is over
 				if(dxSS<minXSS && dySS<minYSS) {
@@ -240,12 +235,12 @@ public class Astroid_core implements ApplicationListener {
 	 */
 	private void display() {
 		
-		Gdx.gl11.glClearColor(0.0f,0.0f,0.2f,1.0f);
-		Gdx.gl11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+		Gdx.gl10.glClearColor(0.0f,0.0f,0.2f,1.0f);
+		Gdx.gl10.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
-		Gdx.gl11.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		Gdx.gl11.glMatrixMode(GL11.GL_MODELVIEW);
-		Gdx.gl11.glLoadIdentity();
+		Gdx.gl10.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		Gdx.gl10.glMatrixMode(GL10.GL_MODELVIEW);
+		Gdx.gl10.glLoadIdentity();
 		Gdx.glu.gluOrtho2D(Gdx.gl10, 0, Gdx.graphics.getWidth(), 0, Gdx.graphics.getHeight());
 		
 		if(!gameOver) {
@@ -259,15 +254,17 @@ public class Astroid_core implements ApplicationListener {
 				b.draw();
 			}
 		}else {
-				//Gdx.gl.glClear(GL11.GL_COLOR_BUFFER_BIT);
-	           // batch.begin();
+			Gdx.gl10.glClearColor(0.0f,0.0f,0.2f,1.0f);
+			Gdx.gl10.glClear(GL10.GL_COLOR_BUFFER_BIT);
+				Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+	            batch.begin();
 	            font.setColor(0.9f, 0.0f, 1.0f, 1.0f);
 	            font.setScale(4.0f);
 	            font.draw(batch, "Game Over", 330, 500);
 	            font.setScale(2.0f);
 	            font.setColor(0.9f, 1.0f, 1.0f, 1.0f);
-	            font.draw(batch, "Press Enter to restart", 330, 300);
-	          //  batch.end();
+	            font.draw(batch, "Press Enter to quit", 350, 300);
+	            batch.end();
 			}
 	}
 	

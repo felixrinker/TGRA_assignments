@@ -40,7 +40,7 @@ public class Bullet {
 	public Bullet (float width, float height, Vector<Point2D> vertexList) {
 		this.width = width;
 		this.height = height;
-		this.speed= 0.5f;
+		this.speed= 10.5f;
 		this.angle = 90f;
 		this.lifeTime = 3000;
 		this.creationTime = System.currentTimeMillis();
@@ -84,10 +84,11 @@ public class Bullet {
 		
 		
 		this(width, height, positionX, positionY, vertexList);
-		float deltaTime = Gdx.graphics.getDeltaTime();
-		this.angle += angle*deltaTime;
-		this.speed += speed;
-		this.direction = TransformationMatrix.multiplyVectorAndMatrix(TransformationMatrix.getIdentityMatrix(), direction);
+		//float deltaTime = Gdx.graphics.getDeltaTime();
+		
+		this.angle += angle;
+		//this.speed = speed*deltaTime;
+		this.direction = direction;//TransformationMatrix.multiplyVectorAndMatrix(TransformationMatrix.rotationMatrix(this.angle), new float[]{this.speed, 0f, 0f, 0f});
 	}
 	
 	/**
@@ -95,23 +96,22 @@ public class Bullet {
 	 */
 	public void draw() {
 		
-		Gdx.gl11.glPushMatrix();
-		Gdx.gl11.glColor4f(1.0f, 0.5f, 0.5f, 1.0f);
-		Gdx.gl11.glTranslatef(this.positionX, this.positionY, 0);
-		Gdx.gl11.glMultMatrixf(TransformationMatrix.rotationMatrix(angle), 0);
-		Gdx.gl11.glDrawArrays(objRef.getOpenGLPrimitiveType(), objRef.getFirstIndex(), objRef.getVertexCount());
-		Gdx.gl11.glPopMatrix();	
+		Gdx.gl10.glPushMatrix();
+		Gdx.gl10.glColor4f(1.0f, 0.5f, 0.5f, 1.0f);
+		Gdx.gl10.glTranslatef(this.positionX, this.positionY, 0);
+		Gdx.gl10.glMultMatrixf(TransformationMatrix.rotationMatrix(angle), 0);
+		Gdx.gl10.glDrawArrays(objRef.getOpenGLPrimitiveType(), objRef.getFirstIndex(), objRef.getVertexCount());
+		Gdx.gl10.glPopMatrix();	
 	}
 	
 	/**
 	 * 
 	 */
 	public void update () {
-		
 		float deltaTime = Gdx.graphics.getDeltaTime();
 		
-		this.positionX += this.direction[0]*speed*deltaTime;
-		this.positionY += this.direction[1]*speed*deltaTime;
+		this.positionX += this.direction[0]*deltaTime;
+		this.positionY += this.direction[1]*deltaTime;
 		
 		if(this.positionX >= Gdx.graphics.getWidth()) {
 			this.positionX = 0;
