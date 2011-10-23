@@ -1,4 +1,7 @@
 package com.tgra.model;
+
+import com.badlogic.gdx.Gdx;
+
 /**
  * 
  * @author Felix Rinker
@@ -6,12 +9,28 @@ package com.tgra.model;
  */
 public class Maze {
 
-	Cell[][] cells;
+	private Cell[][] cells;
 	
 	
 	
 	
+	public void draw() {
+		
+		
+		for (int row=0; row < cells.length; row++)
+		{
+		    for (int col=0; col < cells[row].length; col++)
+		    {
+		    	Gdx.gl11.glPushMatrix();
+				Gdx.gl11.glTranslatef( (float) row, 0.0f, (float) col );
+				//Gdx.gl11.glScalef(0.95f, 0.95f, 0.95f);
+				cells[row][col].draw();
+				Gdx.gl11.glPopMatrix();
+		    }
+		}
+	}
 	
+	//////////////////////// WALL GETTER ///////////////////////////
 	/**
 	 * 
 	 * @param x
