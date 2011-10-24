@@ -1,5 +1,7 @@
 package com.tgra.camera;
 
+
+
 import com.badlogic.gdx.graphics.GL11;
 
 import com.badlogic.gdx.Gdx;
@@ -8,10 +10,10 @@ import com.tgra.model.Vector3D;
 
 public class Camera
 {
-	Point3D eye;
-	Vector3D u;
-	Vector3D v;
-	Vector3D n;
+	private Point3D eye;
+	private Vector3D u;
+	private Vector3D v;
+	private Vector3D n;
 
 	public Camera(Point3D pEye, Point3D pCenter, Vector3D up)
 	{
@@ -40,6 +42,10 @@ public class Camera
 	public void slide(float delU, float delV, float delN)
 	{
 		eye.add(Vector3D.sum(Vector3D.mult(delU, u), Vector3D.sum(Vector3D.mult(delV, v), Vector3D.mult(delN, n))));
+		
+
+//		System.out.println("eye: "+eye);
+		
 	}
 
 	public void yaw(float angle)
@@ -67,5 +73,9 @@ public class Camera
 		Vector3D t = v;
 		v = Vector3D.sum(Vector3D.mult(c, t), Vector3D.mult(s, n));
 		n = Vector3D.sum(Vector3D.mult(-s, t), Vector3D.mult(c, n));
+	}
+
+	public Point3D getEye() {
+		return eye;
 	}
 }
