@@ -21,9 +21,14 @@ public class Cell {
 	private Texture floorTexture;
 	private FloatBuffer texCoordBuffer;
 	private Texture wallTexture;
+	private int posX;
+	private int posY;
 	
-	public Cell( boolean westWall, boolean southWall) {
+	public Cell( int x, int y, boolean westWall, boolean southWall) {
 		super();
+		
+		this.posX = x;
+		this.posY = y;
 		
 		this.westWall	= westWall;
 		this.southWall	= southWall;
@@ -43,9 +48,9 @@ public class Cell {
 		//wallTexture = new Texture(Gdx.files.internal("assets/textures/wall.jpg"));
 	}
 
-	public Cell() {
+	public Cell(int x, int y) {
 		
-		this(true, true);
+		this(x, y, true, true);
 	};
 	
 	
@@ -178,6 +183,13 @@ public class Cell {
 		return westWall;
 	}
 
+	public int getPosX() {
+		return posX;
+	}
+
+	public int getPosY() {
+		return posY;
+	}
 
 	@Override
 	public String toString() {
