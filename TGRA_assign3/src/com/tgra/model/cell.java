@@ -39,13 +39,13 @@ public class Cell {
 										0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f});
 		texCoordBuffer.rewind();
 		
-		floorTexture = new Texture(Gdx.files.internal("assets/textures/floor.jpg"));
-		wallTexture = new Texture(Gdx.files.internal("assets/textures/wall.jpg"));
+		//floorTexture = new Texture(Gdx.files.internal("assets/textures/floor.jpg"));
+		//wallTexture = new Texture(Gdx.files.internal("assets/textures/wall.jpg"));
 	}
 
 	public Cell() {
 		
-		this(false, false);
+		this(true, true);
 	};
 	
 	
