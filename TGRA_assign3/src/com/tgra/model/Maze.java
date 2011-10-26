@@ -21,10 +21,10 @@ public class Maze {
 	public Maze(Camera cam) {
 		
 		this.cam = cam;
-		this.cells = new Cell[MAZE_WIDTH][MAZE_LENGTH ];
 		
 		
-		Cell swCell	= new Cell(true, true);
+		
+		/*Cell swCell	= new Cell(true, true);
 		Cell wCell	= new Cell(true, false);
 		Cell sCell	= new Cell(false, true);
 		Cell eCell	= new Cell();
@@ -39,7 +39,7 @@ public class Maze {
 		
 		cells[2][0] = swCell;
 		cells[2][1] = eCell;
-		cells[2][2] = swCell;
+		cells[2][2] = swCell;*/
 	}
 	
 	public void update() {
