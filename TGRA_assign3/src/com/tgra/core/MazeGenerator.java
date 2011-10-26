@@ -3,8 +3,6 @@ package com.tgra.core;
 
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Collections;
-import java.util.Arrays;
 import java.util.Stack;
 
 import com.tgra.model.Cell;
@@ -31,6 +29,9 @@ public class MazeGenerator {
 	private int mazeHeight;
 	private int mazeLength;
 	private Cell[][] cells;
+	private ArrayList<Cell> visitN;
+	private ArrayList<Cell> unvisitN;
+	private Stack<Cell> traceStack;
 	private static final Random randomGenerator = new Random();
  
 	public MazeGenerator(int mazeHeight, int mazeLength) {
@@ -40,7 +41,7 @@ public class MazeGenerator {
 		
 		this.cells = new Cell[mazeHeight][mazeLength ];
 	
-		generateMaze(this.mazeHeight, this.mazeLength);
+		generateCellsWithWalls();
 	}
 	
 	/**
@@ -48,98 +49,136 @@ public class MazeGenerator {
 	 */
 	public void generatePath() {
 		
-		ArrayList<Cell> visitN = new ArrayList<Cell>();
-		ArrayList<Cell> unvisitN = new ArrayList<Cell>();
+		// create needed caches
+		visitN		= new ArrayList<Cell>();
+		unvisitN	= new ArrayList<Cell>();
+		traceStack	= new Stack<Cell>();
 		
-		Stack<Cell> stack = new Stack<Cell>();
+		// mark all cells als unvisited
 		for (int x = 0; x < mazeHeight-1; x++) {
 			for (int y = 1; y < mazeLength; y++) {
 				unvisitN.add(cells[x][y]);
 			}
 		}
-		
-		Cell currentCell = cells[0][1];
-		// make currentCell visit
-		unvisitN.remove(currentCell);
-		visitN.add(currentCell);
-		stack.add(currentCell);
+		// make first cell visit
+		Cell currentCell = this.updateSearchCaches(cells[0][1]);
 		currentCell.setSouthWall(false);
+		
 		while(!unvisitN.isEmpty()) {
 			
-			int curX = currentCell.getPosX();
-			int curY = currentCell.getPosY();
-			
-			ArrayList<Cell> foundN	= findNeighbours(curX, curY);
-			//System.out.println("found N: "+foundN);
+			// find all existing neighbors
+			ArrayList<Cell> foundN	= findNeighbours(currentCell);
 			
 			// sort out visited neighbors
 			ArrayList<Cell> unknownN = new ArrayList<Cell>();
 			for(Cell n : foundN) {
 				if(!visitN.contains(n)) unknownN.add(n);
 			}
+			
 			if(!unknownN.isEmpty()) {	
 				// choose one random from remaining
 				int index = randomGenerator.nextInt(unknownN.size());
 				Cell randomN = unknownN.get(index);		
-						
-				//System.out.println("Random N: "+randomN.getPosX()+" Y: "+randomN.getPosY());
-				
-				
-				modifyWall(currentCell, randomN);
-				
-				// push randomN to visit stack and remove from unvisit
-				visitN.add(randomN);
-				unvisitN.remove(randomN);
-				
-				stack.add(randomN);
-				
+				// remove connecting wall
+				modifyWall(currentCell, randomN);	
 				// make random new current cell
-				currentCell = randomN;
+				currentCell = this.updateSearchCaches(randomN);
 				
 			}else {
-				//if(unvisitN.isEmpty()) System.out.println("X: "+currentCell.getPosX()+" Y: "+currentCell.getPosY());
-				//if(!unvisitN.isEmpty()) currentCell = unvisitN.get(0);
-				
-				currentCell = stack.pop();
+				currentCell = traceStack.pop();
 			}	
-			//this.display();
 		}
-		
-		
-		this.display();
-		System.out.println("X: "+currentCell.getPosX()+" Y: "+currentCell.getPosY());
-		/*for(Cell c: visitN) {
-			System.out.println("X: "+c.getPosX()+" Y: "+c.getPosY());
-		}*/
 	}
 	
-	private void createExit(Cell cell) {
-		
-		int x = cell.getPosX();
-		int y = cell.getPosY();
-		
-		
+	/**
+	 * Draws the generated maze
+	 * primary for debugging
+	 */
+	public void display() {
+		for (int i = 0; i < this.mazeHeight; i++) {
+			for (int j = 0; j < this.mazeLength; j++) {	
+				System.out.print( this.cells[i][j].isSouthWall() ? "---+" : "   +");
+			}
+			
+			System.out.println(" ");
+			
+			for (int j = 0; j < this.mazeLength; j++) {
+				System.out.print( this.cells[i][j].isWestWall() ? "   |" : "    ");
+			}
+			
+			System.out.println(" ");
+		}
 	}
 	
+/******************************************** PRIVATE METHODS ************************************************/	
+	
+	/**
+	 * Updates the unvisit / visit cache
+	 * also push the cell on the trace stack
+	 * 
+	 * @param newCell the new cell to cache
+	 * 
+	 * @return the new cell
+	 */
+	private Cell updateSearchCaches(Cell newCell) {
+		unvisitN.remove(newCell);
+		visitN.add(newCell);
+		traceStack.add(newCell);
+		
+		return newCell;
+	}
+	
+	/**
+	 * Generates a cell array with the given sizes
+	 * the generated cells have all walls set.
+	 */
+	private void generateCellsWithWalls() {
+			
+		for (int x = 0; x < mazeHeight; x++) {	
+			for (int y = 0; y < mazeLength; y++) {
+					
+				this.cells[x][y] = new Cell(x,y);
+			}
+		}
+	}
+	
+	/**
+	 * Modify the wall of the cell
+	 * to connect it with the neighbor cell
+	 * 
+	 * @param currentCell the current cell
+	 * @param neighCell the neighbor cell
+	 */
 	private void modifyWall(Cell currentCell, Cell neighCell) {
 		
-		int curX	= currentCell.getPosX();
-		int curY	= currentCell.getPosY();
-		int neX		= neighCell.getPosX();
-		int neY		= neighCell.getPosY();
+		int cuX	= currentCell.getPosX();
+		int cuY	= currentCell.getPosY();
+		int neX	= neighCell.getPosX();
+		int neY	= neighCell.getPosY();
 		
-		if(neX == curX) {	
-			if(neY > curY) this.cells[curX][curY].setWestWall(false);
-			if(neY < curY) this.cells[curX][neY].setWestWall(false);
+		if(neX == cuX) {	
+			if(neY > cuY) this.cells[cuX][cuY].setWestWall(false);
+			if(neY < cuY) this.cells[cuX][neY].setWestWall(false);
 		}
 		
-		if(neY == curY) {
-			if(neX > curX) this.cells[neX][curY].setSouthWall(false);
-			if(neX < curX) this.cells[curX][curY].setSouthWall(false);
+		if(neY == cuY) {
+			if(neX > cuX) this.cells[neX][cuY].setSouthWall(false);
+			if(neX < cuX) this.cells[cuX][cuY].setSouthWall(false);
 		}
 	}
 	
-	private ArrayList<Cell> findNeighbours(int x, int y) {
+	/**
+	 * Finds all neighbor cell 
+	 * of the given cell
+	 * 
+	 * @param cell the cell to find the neighbors for
+	 * 
+	 * @return a ArrayList either containing the neighbors or empty
+	 */
+	private ArrayList<Cell> findNeighbours(Cell cell) {
+		
+		int x = cell.getPosX();
+		int y = cell.getPosY(); 
 		
 		ArrayList<Cell> neighCells = new ArrayList<Cell>();
 		
@@ -155,53 +194,19 @@ public class MazeGenerator {
 		return neighCells;
 	}
 	
-	private void generateMaze(int mazeWidth, int  mazeLength) {
-		
-		for (int x = 0; x < mazeWidth; x++) {
-			
-			for (int y = 0; y < mazeLength; y++) {
-				
-				this.cells[x][y] = new Cell(x,y);
-			}
-		}
-		
-		//this.cells[0][1].setSouthWall(false);
-	}
  
-	public void display() {
-		for (int i = 0; i < this.mazeHeight; i++) {
-			// draw the north edge
-			for (int j = 0; j < this.mazeLength; j++) {
-				
-				if(this.cells[i][j].isSouthWall()) {
-					System.out.print("---+");
-				}else{
-					System.out.print("   +");
-				}
-			}
-			System.out.println(" ");
-			
-			for (int j = 0; j < this.mazeLength; j++) {
-				
-				if(this.cells[i][j].isWestWall()) {
-					System.out.print("   |");
-				}else {
-					System.out.print("    ");
-				}
-				
-			}
-			
-			System.out.println(" ");
-		}
-	}
+	
  
 	public static void main(String[] args) {
 		
 		MazeGenerator maze = new MazeGenerator(20, 30);
 		maze.display();
-		System.out.println("aa");
+		
+		System.out.println("\n\n\n");
 		
 		maze.generatePath();
+		
+		maze.display();
 	}
  
 }
