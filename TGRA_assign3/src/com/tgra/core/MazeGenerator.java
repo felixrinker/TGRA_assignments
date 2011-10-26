@@ -46,7 +46,9 @@ public class MazeGenerator {
 		generateMaze(this.mazeHeight, this.mazeLength);
 	}
 	
-	
+	/**
+	 * 
+	 */
 	public void generatePath() {
 		
 		ArrayList<Cell> visitN = new ArrayList<Cell>();
@@ -69,12 +71,20 @@ public class MazeGenerator {
 					}
 					
 					// choose one random from remaining
-					int index = this.randomGenerator.nextInt(unknownN.size());
+					int index = randomGenerator.nextInt(unknownN.size());
 					Cell randomN = unknownN.get(index);		
 							
-					System.out.println("Random N: "+randomN);
+					System.out.println("Random N: "+randomN.getPosX()+" Y: "+randomN.getPosY());
 					
+					if(randomN.getPosX() != x) {	
+						if(randomN.getPosY() > y) this.cells[x][y].setWestWall(false);
+						if(randomN.getPosY() < y) this.cells[x][randomN.getPosY()].setWestWall(false);
+					}
 					
+					if(randomN.getPosY() != y) {
+						if(randomN.getPosX() > x) this.cells[randomN.getPosX()][y].setSouthWall(false);
+						if(randomN.getPosX() < x) this.cells[x][y].setSouthWall(false);
+					}
 				}
 			}
 			System.out.println("+");
@@ -112,11 +122,11 @@ public class MazeGenerator {
 	
 	private void generateMaze(int mazeWidth, int  mazeLength) {
 		
-		for (int i = 0; i < mazeWidth; i++) {
+		for (int x = 0; x < mazeWidth; x++) {
 			
-			for (int j = 0; j < mazeLength; j++) {
+			for (int y = 0; y < mazeLength; y++) {
 				
-				this.cells[i][j] = new Cell();
+				this.cells[x][y] = new Cell(x,y);
 			}
 		}
 		
