@@ -7,8 +7,11 @@ import java.util.Stack;
 
 import com.tgra.model.Cell;
  
-/*
-
+/**
+ * 
+ * 
+ * @author Felix Rinker
+ * 
 The depth-first search algorithm of maze generation is frequently implemented using backtracking:
 Start with all walls in the maze intact
 
@@ -26,7 +29,7 @@ Repeat this until the stack is empty.
  */
 public class MazeGenerator {
 	
-	private int mazeHeight;
+	private int mazeWidth;
 	private int mazeLength;
 	private Cell[][] cells;
 	private ArrayList<Cell> visitN;
@@ -34,12 +37,12 @@ public class MazeGenerator {
 	private Stack<Cell> traceStack;
 	private static final Random randomGenerator = new Random();
  
-	public MazeGenerator(int mazeHeight, int mazeLength) {
+	public MazeGenerator(int mazeLength, int mazeHeight) {
 		
-		this.mazeHeight	= mazeHeight;
+		this.mazeWidth	= mazeHeight;
 		this.mazeLength = mazeLength;
 		
-		this.cells = new Cell[mazeHeight][mazeLength ];
+		this.cells = new Cell[mazeLength][mazeHeight];
 	
 		generateCellsWithWalls();
 	}
@@ -55,13 +58,13 @@ public class MazeGenerator {
 		traceStack	= new Stack<Cell>();
 		
 		// mark all cells als unvisited
-		for (int x = 0; x < mazeHeight-1; x++) {
-			for (int y = 1; y < mazeLength; y++) {
-				unvisitN.add(cells[x][y]);
+		for (int row = 0; row < mazeWidth-1; row++) {	
+			for (int col = 1; col < mazeLength; col++) {
+				unvisitN.add(cells[col][row]);
 			}
 		}
 		// make first cell visit
-		Cell currentCell = this.updateSearchCaches(cells[0][1]);
+		Cell currentCell = this.updateSearchCaches(cells[1][0]);
 		currentCell.setSouthWall(false);
 		
 		while(!unvisitN.isEmpty()) {
@@ -90,20 +93,25 @@ public class MazeGenerator {
 		}
 	}
 	
+	public Cell[][] getCellArray() {
+		
+		return this.cells;
+	}
+	
 	/**
 	 * Draws the generated maze
 	 * primary for debugging
 	 */
 	public void display() {
-		for (int i = 0; i < this.mazeHeight; i++) {
-			for (int j = 0; j < this.mazeLength; j++) {	
-				System.out.print( this.cells[i][j].isSouthWall() ? "---+" : "   +");
+		for (int row = 0; row < mazeWidth; row++) {	
+			for (int col = 0; col < mazeLength; col++) {
+				System.out.print( this.cells[col][row].isSouthWall() ? "---+" : "   +");
 			}
 			
 			System.out.println(" ");
 			
-			for (int j = 0; j < this.mazeLength; j++) {
-				System.out.print( this.cells[i][j].isWestWall() ? "   |" : "    ");
+			for (int col = 0; col < mazeLength; col++) {
+				System.out.print( this.cells[col][row].isWestWall() ? "   |" : "    ");
 			}
 			
 			System.out.println(" ");
@@ -134,10 +142,10 @@ public class MazeGenerator {
 	 */
 	private void generateCellsWithWalls() {
 			
-		for (int x = 0; x < mazeHeight; x++) {	
-			for (int y = 0; y < mazeLength; y++) {
+		for (int row = 0; row < mazeWidth; row++) {	
+			for (int col = 0; col < mazeLength; col++) {
 					
-				this.cells[x][y] = new Cell(x,y);
+				this.cells[col][row] = new Cell(col,row);
 			}
 		}
 	}
@@ -157,13 +165,13 @@ public class MazeGenerator {
 		int neY	= neighCell.getPosY();
 		
 		if(neX == cuX) {	
-			if(neY > cuY) this.cells[cuX][cuY].setWestWall(false);
-			if(neY < cuY) this.cells[cuX][neY].setWestWall(false);
+			if(neY < cuY) this.cells[cuX][cuY].setSouthWall(false);
+			if(neY > cuY) this.cells[cuX][neY].setSouthWall(false);
 		}
 		
 		if(neY == cuY) {
-			if(neX > cuX) this.cells[neX][cuY].setSouthWall(false);
-			if(neX < cuX) this.cells[cuX][cuY].setSouthWall(false);
+			if(neX > cuX) this.cells[cuX][cuY].setWestWall(false);
+			if(neX < cuX) this.cells[neX][cuY].setWestWall(false);
 		}
 	}
 	
@@ -182,13 +190,13 @@ public class MazeGenerator {
 		
 		ArrayList<Cell> neighCells = new ArrayList<Cell>();
 		
-		if(x >= 0 && x < this.mazeHeight-1 && y >= 1 && y< this.mazeLength) {
+		if(x >= 1 && x < this.mazeLength && y >= 0 && y < this.mazeWidth-1) {
 			
-			if(y > 1) neighCells.add(cells[x][y-1]);
-			if(y < this.mazeLength-1) neighCells.add(cells[x][y+1]);
+			if(x > 1) neighCells.add(cells[x-1][y]);
+			if(x < this.mazeLength-1) neighCells.add(cells[x+1][y]);
 			
-			if(x > 0) neighCells.add(cells[x-1][y]);
-			if(x < this.mazeHeight-2) neighCells.add(cells[x+1][y]);
+			if(y > 0) neighCells.add(cells[x][y-1]);
+			if(y < this.mazeWidth-2) neighCells.add(cells[x][y+1]);
 		}
 		
 		return neighCells;
@@ -199,7 +207,7 @@ public class MazeGenerator {
  
 	public static void main(String[] args) {
 		
-		MazeGenerator maze = new MazeGenerator(20, 30);
+		MazeGenerator maze = new MazeGenerator(5, 5);
 		maze.display();
 		
 		System.out.println("\n\n\n");
