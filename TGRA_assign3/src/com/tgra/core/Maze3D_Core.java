@@ -1,13 +1,8 @@
 package com.tgra.core;
-import java.nio.FloatBuffer;
-
-import com.badlogic.gdx.graphics.GL11;
-import com.badlogic.gdx.utils.BufferUtils;
-
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.tgra.camera.Camera;
+import com.badlogic.gdx.graphics.GL11;
 import com.tgra.camera.MazeCam;
 import com.tgra.model.Cube;
 import com.tgra.model.Maze;
@@ -15,17 +10,11 @@ import com.tgra.model.Point3D;
 import com.tgra.model.Vector3D;
 
 
-public class First3D_Core implements ApplicationListener
+public class Maze3D_Core implements ApplicationListener
 {
-	MazeCam cam;
-	Cube cube;
+	private MazeCam cam;
+	private Cube cube;
 	private Maze maze;
-	private int zoom;
-	private float tx;
-	private float ty;
-	private float rotx;
-	private float roty;
-	private float light_angle;
 	
 	@Override
 	public void create()
@@ -48,14 +37,12 @@ public class First3D_Core implements ApplicationListener
 		maze = new Maze();
 		
 		cam = new MazeCam(new Point3D(1.5f, 0.5f, 0.5f), new Point3D(1.5f, 0.5f, 2f), new Vector3D(0.0f, 1.0f, 0.0f), maze);
-		
-		
+		maze.setCam(cam);
+		Gdx.gl11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
 		cube = new Cube();
-		
-		
-		
-		light_angle = 0.0f;
 	}
+	
+	
 
 	@Override
 	public void dispose() {
@@ -72,53 +59,15 @@ public class First3D_Core implements ApplicationListener
 	
 	private void update()
 	{
-	
 		this.cam.update();
+		this.maze.update();
 		
-		/*float deltaTime = Gdx.graphics.getDeltaTime();
-
-		if(Gdx.input.isKeyPressed(Input.Keys.UP))
-		{
-			cam.pitch(-90.0f * deltaTime);
+		if(maze.isFinish()) {
+			if(Gdx.input.isKeyPressed(Input.Keys.ENTER)) {
+				this.maze.setFinish(false);
+				this.create();
+			}
 		}
-		if(Gdx.input.isKeyPressed(Input.Keys.DOWN))
-		{
-			cam.pitch(90.0f * deltaTime);
-		}
-		if(Gdx.input.isKeyPressed(Input.Keys.LEFT))
-		{
-			cam.yaw(-90.0f * deltaTime);
-		}
-		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT))
-		{
-			cam.yaw(90.0f * deltaTime);
-		}
-		if(Gdx.input.isKeyPressed(Input.Keys.W))
-		{
-			cam.slide(0.0f, 0.0f, -10.0f * deltaTime);
-		}
-		if(Gdx.input.isKeyPressed(Input.Keys.S))
-		{
-			cam.slide(0.0f, 0.0f, 10.0f * deltaTime);
-		}
-		if(Gdx.input.isKeyPressed(Input.Keys.A))
-		{
-			cam.slide(-10.0f * deltaTime, 0.0f, 0.0f);
-		}
-		if(Gdx.input.isKeyPressed(Input.Keys.D))
-		{
-			cam.slide(10.0f * deltaTime, 0.0f, 0.0f);
-		}
-		
-
-		if(Gdx.input.isKeyPressed(Input.Keys.R))
-		{
-			cam.slide(0.0f, 10.0f * deltaTime, 0.0f);
-		}
-		if(Gdx.input.isKeyPressed(Input.Keys.F))
-		{
-			cam.slide(0.0f, -10.0f * deltaTime, 0.0f);
-		}*/
 	}
 
 	
@@ -167,16 +116,12 @@ public class First3D_Core implements ApplicationListener
 		float[] materialAmbient = {0.2f, 0.6f, 0.1f, 1.0f};
 		Gdx.gl11.glMaterialfv(GL11.GL_FRONT, GL11.GL_AMBIENT, materialAmbient, 0);
 		
-		Gdx.gl11.glMaterialf(GL11.GL_FRONT, GL11.GL_SHININESS, 90.0f);
-
-		
 		Gdx.gl11.glPushMatrix();
 		Gdx.gl11.glTranslatef(-1.0f, 5.0f, -1.0f);
 		cube.draw();
 		Gdx.gl11.glPopMatrix();
 		
-		this.maze.draw();
-		
+		this.maze.draw();	
 	}
 
 	@Override
@@ -193,13 +138,12 @@ public class First3D_Core implements ApplicationListener
 		int h = arg1;
 		
 		Gdx.gl11.glViewport(0, 0, w, h); 
-		Gdx.gl11.glMatrixMode (Gdx.gl11.GL_PROJECTION);
+		Gdx.gl11.glMatrixMode (GL11.GL_PROJECTION);
 		Gdx.gl11.glLoadIdentity ();
 		
 		Gdx.glu.gluPerspective (Gdx.gl11, 45, (float) w / (float) h, 0.2f, 1000.0f );
-		Gdx.gl11.glMatrixMode (Gdx.gl11.GL_MODELVIEW); //set the matrix back to model
-		
-		
+		Gdx.gl11.glMatrixMode (GL11.GL_MODELVIEW); //set the matrix back to model
+
 	}
 
 	@Override

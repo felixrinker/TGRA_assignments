@@ -125,7 +125,7 @@ public class Cell {
 		if(this.isSouthWall()) {
 			Gdx.gl11.glPushMatrix();
 			Gdx.gl11.glTranslatef( 0.5f, 0.5f, 0.0f );
-			Gdx.gl11.glScalef(1.0f, 1.0f, 0.15f);
+			Gdx.gl11.glScalef(1.0f, 1.0f, 0.05f);
 			
 			this.drawWallTexture();
 			
@@ -137,7 +137,7 @@ public class Cell {
 		if(this.isWestWall()) {
 			Gdx.gl11.glPushMatrix();
 			Gdx.gl11.glTranslatef( 1.0f, 0.5f, 0.5f );
-			Gdx.gl11.glScalef(0.15f, 1.0f, 1.0f);
+			Gdx.gl11.glScalef(0.05f, 1.0f, 1.0f);
 			
 			this.drawWallTexture();
 			cube.draw();
@@ -194,6 +194,62 @@ public class Cell {
 	public String toString() {
 		return "Cell [westWall=" + westWall + ", southWall=" + southWall + "]";
 	}
-	
-	
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((cube == null) ? 0 : cube.hashCode());
+		result = prime * result
+				+ ((floorTexture == null) ? 0 : floorTexture.hashCode());
+		result = prime * result + posX;
+		result = prime * result + posY;
+		result = prime * result + (southWall ? 1231 : 1237);
+		result = prime * result
+				+ ((texCoordBuffer == null) ? 0 : texCoordBuffer.hashCode());
+		result = prime * result
+				+ ((wallTexture == null) ? 0 : wallTexture.hashCode());
+		result = prime * result + (westWall ? 1231 : 1237);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Cell other = (Cell) obj;
+		if (cube == null) {
+			if (other.cube != null)
+				return false;
+		} else if (!cube.equals(other.cube))
+			return false;
+		if (floorTexture == null) {
+			if (other.floorTexture != null)
+				return false;
+		} else if (!floorTexture.equals(other.floorTexture))
+			return false;
+		if (posX != other.posX)
+			return false;
+		if (posY != other.posY)
+			return false;
+		if (southWall != other.southWall)
+			return false;
+		if (texCoordBuffer == null) {
+			if (other.texCoordBuffer != null)
+				return false;
+		} else if (!texCoordBuffer.equals(other.texCoordBuffer))
+			return false;
+		if (wallTexture == null) {
+			if (other.wallTexture != null)
+				return false;
+		} else if (!wallTexture.equals(other.wallTexture))
+			return false;
+		if (westWall != other.westWall)
+			return false;
+		return true;
+	}
 }

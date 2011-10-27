@@ -65,7 +65,7 @@ public class MazeGenerator {
 		}
 		// make first cell visit
 		Cell currentCell = this.updateSearchCaches(cells[1][0]);
-		currentCell.setSouthWall(false);
+		//currentCell.setSouthWall(false);
 		
 		while(!unvisitN.isEmpty()) {
 			

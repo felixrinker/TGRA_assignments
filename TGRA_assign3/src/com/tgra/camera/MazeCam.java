@@ -59,9 +59,7 @@ public class MazeCam {
 	 */
 	public void slide(float delU, float delV, float delN)
 	{
-		//System.out.println ("slide: n before: " + n.x +", " + n.y + ", "+n.z);
 		eye.add(Vector3D.sum(Vector3D.mult(delU, u), Vector3D.sum(Vector3D.mult(delV, v), Vector3D.mult(delN, n))));
-		//System.out.println ("slide: n after: " + n.x +", " + n.y + ", "+n.z);
 	}
 
 	/**
@@ -72,13 +70,11 @@ public class MazeCam {
 	 */
 	public void yaw(float angle)
 	{
-		//System.out.println ("yaw: n before:	\t" + n.x +", " + n.y + ", "+n.z);
 		float c = (float) Math.cos(angle*Math.PI/180.0f);
 		float s = (float) Math.sin(angle*Math.PI/180.0f);
 		Vector3D t = u;
 		u = Vector3D.sum(Vector3D.mult(c, t), Vector3D.mult(s, n));
 		n = Vector3D.sum(Vector3D.mult(-s, t), Vector3D.mult(c, n));
-		//System.out.println ("yaw: n after: \t\t" + n.x +", " + n.y + ", "+n.z);
 	}
 
 	/**
@@ -134,8 +130,17 @@ public class MazeCam {
 		}
 	}
 
+	
+	public Cell getCurrentCell() {
+		
+		int fieldPosX = (int)this.eye.x;
+		int fieldPosZ = (int)this.eye.z;
+		
+		return maze.getCell(fieldPosX, fieldPosZ);
+	}
+	
 	/**
-	 * Move the camera around, sliding along walls or stopping when trapped in the edge of two walls.
+	 * Move the camera around
 	 * 
 	 * @param forwards -1.0f up button, 1.0f back button
 	 * @param deltaTime
@@ -143,6 +148,11 @@ public class MazeCam {
 	 */
 	private void move(float forwards, float deltaTime, Maze maze)
 	{		
+
+		boolean wWall = false;
+		boolean sWall = false;
+		
+		
 		int fieldPosX = (int)this.eye.x;
 		int fieldPosZ = (int)this.eye.z;
 		
@@ -152,18 +162,13 @@ public class MazeCam {
 		float camPosX = this.eye.x;
 		float camPosZ = this.eye.z;
 		
-		Cell currentCell = maze.getCell(fieldPosX, fieldPosZ);
+		Cell currentCell = getCurrentCell();
 		
 		System.out.println("currentCell: "+currentCell);
 		System.out.println("nextCell: "+maze.getCell(fieldPosX, fieldPosZ +1));
 		System.out.println("fieldX: "+fieldPosX+" fieldZ: "+fieldPosZ);
 		System.out.println("camX: "+camPosX+" camZ: "+camPosZ);	
 		System.out.println("directionX: "+directionX+" directionZ: "+directionZ);
-		
-		boolean wall1Hit = false;
-		boolean wall2Hit = false;
-		
-
 		
 		if(directionX <= 0)
 		{
@@ -175,27 +180,27 @@ public class MazeCam {
 				{
 					if(camPosX <= (fieldPosX + wallDistanceZeroThree))
 					{
-						wall1Hit = true;
+						wWall = true;
 					}
 				}
 				if(maze.getCell(fieldPosX, fieldPosZ +1).isSouthWall())
 				{
 					if(camPosZ >= (fieldPosZ + wallDistanceZeroThree))
 					{
-						wall2Hit = true;
+						sWall = true;
 					}
 				}
-				if(wall1Hit == true && wall2Hit == false){
+				if(wWall == true && sWall == false){
 					this.eye.z += deltaTime * 1;
 					System.out.println("Wall 1 hit");
 					return;
 				}
-				else if(wall1Hit == false && wall2Hit == true){
+				else if(wWall == false && sWall == true){
 					this.eye.x -= deltaTime * 1;
 					System.out.println("Wall 2 hit");
 					return;
 				}
-				else if(wall1Hit == true && wall2Hit == true){
+				else if(wWall == true && sWall == true){
 					System.out.println("Trapped!");
 					return;
 				}
@@ -208,27 +213,27 @@ public class MazeCam {
 				{
 					if(camPosX >= (fieldPosX + wallDistanceZeroThree))
 					{
-						wall1Hit = true;
+						wWall = true;
 					}
 				}
 				if(currentCell.isSouthWall())
 				{
 					if(camPosZ >= (fieldPosZ + wallDistanceZeroThree))
 					{
-						wall2Hit = true;
+						sWall = true;
 					}
 				}
-				if(wall1Hit == true && wall2Hit == false){
+				if(wWall == true && sWall == false){
 					this.eye.z -= deltaTime * 1;
 					System.out.println("Wall 1 hit");
 					return;
 				}
-				else if(wall1Hit == false && wall2Hit == true){
+				else if(wWall == false && sWall == true){
 					this.eye.x -= deltaTime * 1;
 					System.out.println("Wall 2 hit");
 					return;
 				}
-				else if(wall1Hit == true && wall2Hit == true){
+				else if(wWall == true && sWall == true){
 					System.out.println("Trapped!");
 					return;
 				}
@@ -251,27 +256,27 @@ public class MazeCam {
 				{
 					if(camPosZ >= (fieldPosZ+ wallDistZeroSix))
 					{
-						wall1Hit = true;
+						wWall = true;
 					}
 				}
 				if(currentCell.isWestWall())
 				{
 					if(camPosX >= (fieldPosX +  wallDistZeroSix))
 					{
-						wall2Hit = true;
+						sWall = true;
 					}
 				} 
-				if(wall1Hit == true && wall2Hit == false){
+				if(wWall == true && sWall == false){
 					this.eye.x += deltaTime * 1;
 					System.out.println("Wall 1 hit");
 					return;
 				}
-				else if(wall1Hit == false && wall2Hit == true){
+				else if(wWall == false && sWall == true){
 					this.eye.z += deltaTime * 1;
 					System.out.println("Wall 2 hit");
 					return;
 				}
-				else if(wall1Hit == true && wall2Hit == true){
+				else if(wWall == true && sWall == true){
 					System.out.println("Trapped!");
 					return;
 				}
@@ -284,32 +289,33 @@ public class MazeCam {
 				{
 					if(camPosX >= (fieldPosX + wallDistZeroSix))
 					{
-						wall1Hit = true;
+						wWall = true;
 					}
 				}
 				if(currentCell.isSouthWall())
 				{
 					if(camPosZ <= (fieldPosZ + wallDistZeroSix))
 					{				
-						wall2Hit = true;
+						sWall = true;
 					}
 				}
-				if(wall1Hit == true && wall2Hit == false){
+				if(wWall == true && sWall == false){
 					this.eye.z -= deltaTime * 1;
 					System.out.println("Wall 1 hit");
 					return;
 				}
-				else if(wall1Hit == false && wall2Hit == true){
+				else if(wWall == false && sWall == true){
 					this.eye.x += deltaTime * 1;
 					System.out.println("Wall 2 hit");
 					return;
 				}
-				else if(wall1Hit == true && wall2Hit == true){
+				else if(wWall == true && sWall == true){
 					System.out.println("Trapped!");
 					return;
 				}
 			}
 		}
+		
 		this.slide(0.0f, 0.0f, forwards * deltaTime);	
 	}
 }
