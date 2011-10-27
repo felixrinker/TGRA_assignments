@@ -5,6 +5,7 @@ package com.tgra.camera;
 import com.badlogic.gdx.graphics.GL11;
 
 import com.badlogic.gdx.Gdx;
+import com.tgra.model.Maze;
 import com.tgra.model.Point3D;
 import com.tgra.model.Vector3D;
 
@@ -14,10 +15,12 @@ public class Camera
 	private Vector3D u;
 	private Vector3D v;
 	private Vector3D n;
+	private Maze maze;
 
 	public Camera(Point3D pEye, Point3D pCenter, Vector3D up)
 	{
 		eye = pEye;
+		
 		n = Vector3D.difference(pEye, pCenter);
 		n.normalize();
 		u = Vector3D.cross(up, n);
@@ -55,6 +58,7 @@ public class Camera
 		Vector3D t = u;
 		u = Vector3D.sum(Vector3D.mult(c, t), Vector3D.mult(s, n));
 		n = Vector3D.sum(Vector3D.mult(-s, t), Vector3D.mult(c, n));
+		
 	}
 
 	public void roll(float angle)
@@ -77,5 +81,12 @@ public class Camera
 
 	public Point3D getEye() {
 		return eye;
+	}
+
+	
+	
+	public void setMaze(Maze maze) {
+		
+		this.maze = maze;
 	}
 }

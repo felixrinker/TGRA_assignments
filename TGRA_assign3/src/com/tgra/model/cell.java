@@ -1,6 +1,5 @@
 package com.tgra.model;
 
-import java.io.InputStream;
 import java.nio.FloatBuffer;
 
 import com.badlogic.gdx.Gdx;
@@ -44,8 +43,8 @@ public class Cell {
 										0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f});
 		texCoordBuffer.rewind();
 		
-		//floorTexture = new Texture(Gdx.files.internal("assets/textures/floor.jpg"));
-		//wallTexture = new Texture(Gdx.files.internal("assets/textures/wall.jpg"));
+		floorTexture = new Texture(Gdx.files.internal("assets/textures/floor.jpg"));
+		wallTexture = new Texture(Gdx.files.internal("assets/textures/wall.jpg"));
 	}
 
 	public Cell(int x, int y) {
@@ -137,7 +136,7 @@ public class Cell {
 		
 		if(this.isWestWall()) {
 			Gdx.gl11.glPushMatrix();
-			Gdx.gl11.glTranslatef( 0.0f, 0.5f, 0.5f );
+			Gdx.gl11.glTranslatef( 1.0f, 0.5f, 0.5f );
 			Gdx.gl11.glScalef(0.15f, 1.0f, 1.0f);
 			
 			this.drawWallTexture();

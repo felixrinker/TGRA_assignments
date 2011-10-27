@@ -90,6 +90,12 @@ public class Maze {
 	
 	public Cell getCell( int x, int y ) {
 		
+		if(x < 0) x = 0;
+		if(x > this.cells.length)  x = this.cells.length;
+		
+		if(y < 0) y= 0;
+		if(y > this.cells.length) y = this.cells.length;
+		
 		return this.cells[x][y];
 	}
 }

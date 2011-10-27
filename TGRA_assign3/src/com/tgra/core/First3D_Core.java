@@ -8,6 +8,7 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.tgra.camera.Camera;
+import com.tgra.camera.MazeCam;
 import com.tgra.model.Cube;
 import com.tgra.model.Maze;
 import com.tgra.model.Point3D;
@@ -16,7 +17,7 @@ import com.tgra.model.Vector3D;
 
 public class First3D_Core implements ApplicationListener
 {
-	Camera cam;
+	MazeCam cam;
 	Cube cube;
 	private Maze maze;
 	private int zoom;
@@ -44,12 +45,14 @@ public class First3D_Core implements ApplicationListener
 
 		Gdx.gl11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
 
-		cam = new Camera(new Point3D(0.5f, 0.5f, 0.5f), new Point3D(0.5f, 0.5f, -0.5f), new Vector3D(0.0f, 1.0f, 0.0f));
+		maze = new Maze();
+		
+		cam = new MazeCam(new Point3D(1.5f, 0.5f, 0.5f), new Point3D(1.5f, 0.5f, 2f), new Vector3D(0.0f, 1.0f, 0.0f), maze);
 		
 		
 		cube = new Cube();
 		
-		maze = new Maze(cam);
+		
 		
 		light_angle = 0.0f;
 	}
@@ -69,8 +72,53 @@ public class First3D_Core implements ApplicationListener
 	
 	private void update()
 	{
+	
+		this.cam.update();
 		
-		this.maze.update();
+		/*float deltaTime = Gdx.graphics.getDeltaTime();
+
+		if(Gdx.input.isKeyPressed(Input.Keys.UP))
+		{
+			cam.pitch(-90.0f * deltaTime);
+		}
+		if(Gdx.input.isKeyPressed(Input.Keys.DOWN))
+		{
+			cam.pitch(90.0f * deltaTime);
+		}
+		if(Gdx.input.isKeyPressed(Input.Keys.LEFT))
+		{
+			cam.yaw(-90.0f * deltaTime);
+		}
+		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT))
+		{
+			cam.yaw(90.0f * deltaTime);
+		}
+		if(Gdx.input.isKeyPressed(Input.Keys.W))
+		{
+			cam.slide(0.0f, 0.0f, -10.0f * deltaTime);
+		}
+		if(Gdx.input.isKeyPressed(Input.Keys.S))
+		{
+			cam.slide(0.0f, 0.0f, 10.0f * deltaTime);
+		}
+		if(Gdx.input.isKeyPressed(Input.Keys.A))
+		{
+			cam.slide(-10.0f * deltaTime, 0.0f, 0.0f);
+		}
+		if(Gdx.input.isKeyPressed(Input.Keys.D))
+		{
+			cam.slide(10.0f * deltaTime, 0.0f, 0.0f);
+		}
+		
+
+		if(Gdx.input.isKeyPressed(Input.Keys.R))
+		{
+			cam.slide(0.0f, 10.0f * deltaTime, 0.0f);
+		}
+		if(Gdx.input.isKeyPressed(Input.Keys.F))
+		{
+			cam.slide(0.0f, -10.0f * deltaTime, 0.0f);
+		}*/
 	}
 
 	
