@@ -1,0 +1,221 @@
+\documentclass[12pt,fleqn,reqno]{article}
+%fleqn: left align equations
+%reqno: equation numbers on right
+\usepackage{amsfonts,graphics,epsfig,cite}
+\usepackage{amsmath,graphicx,amssymb,amsthm}
+\usepackage{listings}
+\usepackage[geometry]{ifsym}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman, english]{babel} 
+\usepackage{graphicx}
+\usepackage{color, listings}
+\usepackage{fancyhdr}
+\setlength{\headheight}{15pt}
+\usepackage{multicol}
+
+\lstset{ %
+language=C++,                % choose the language of the code
+basicstyle=\footnotesize,       % the size of the fonts that are used for the code
+numbers=left,                   % where to put the line-numbers
+numberstyle=\footnotesize,      % the size of the fonts that are used for the line-numbers
+stepnumber=1,                   % the step between two line-numbers. If it is 1 each line will be numbered
+numbersep=5pt,                  % how far the line-numbers are from the code
+backgroundcolor=\color{white},  % choose the background color. You must add \usepackage{color}
+showspaces=false,               % show spaces adding particular underscores
+showstringspaces=false,         % underline spaces within strings
+showtabs=false,                 % show tabs within strings adding particular underscores
+frame=single,   		% adds a frame around the code
+tabsize=2,  		% sets default tabsize to 2 spaces
+captionpos=b,   		% sets the caption-position to bottom
+breaklines=true,    	% sets automatic line breaking
+breakatwhitespace=false,    % sets if automatic breaks should only happen at whitespace
+escapeinside={\%}{)}          % if you want to add a comment within your code
+}
+
+
+\title{Computer Graphics}
+\author{
+	Hand-in assignment 2\\
+	\\
+	Felix Rinker\\
+	\\
+	WS 2011
+}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+
+\section{Intersections}A line passes through 2 points, \textbf{(4,7,1)} and \textbf{(6,9,0)}.3 points  \textbf{(9,11,2)},  \textbf{(7,13,-2)} and  \textbf{(8,7,0)} lie in a plane.In which point does the line intersect with the plane?\paragraph{Note:} You may have to represent the geometrical object in different ways.
+
+\subsection{Solution}
+
+\paragraph{Plane:}
+\(P_1 = (9,11,2) \)
+\(P_2 = (7,13,-2) \)
+\(P_3 = (8,7,0) \)
+
+\paragraph{Ray:}
+\(P_4 = (4,7,1) \)
+\(P_5 = (6,9,0) \)
+\(A = P_4 = (4,7,1) \)
+\(c = P_5 - P_4 = (2,2,-1) \)
+
+\setlength{\mathindent}{0pt}
+
+\subsubsection{Find PNF:}
+\begin{alignat*}{2}
+\vec{v}_1 	&= P_2 - P_1 = (-2,2,-4) \\
+\vec{v}_2 	&= P_3 - P_1 = (-1,-4,-2) \\
+\vec{n} 	&= \vec{v}_1 \times \vec{v}_2 = (-20, 0, 10) \\
+	B &= P_1 	= (9,11,2)
+	\\ 
+	\\
+	t_{hit} &= \frac{(B-A) \circ n} {c \circ n} = \frac{(5,4,1) \circ (-20, 0, 10)} {(2,2,-1) \circ (-20, 0, 10)} = \frac{-90} {-50} = \frac{9} {5}
+	\\
+	\\
+	P_{hit}& = A + t_{hit} * c\\
+	&= (4,7,1) + \frac{9} {5} * (2,2,-1)
+	\\
+	&= ( \frac{38}{5}, \frac{53}{3}, \frac{-4}{5})
+\end{alignat*}
+
+
+
+
+\section{Transformations}Consider the following code:
+\begin{lstlisting}
+	glMatrixMode(GL_PROJECTION);  	glLoadIdentity();  	gluPerspective(90.0, 1.25, 3.0, 20.0);  	glMatrixMode(GL_MODELVIEW);  	glLoadIdentity();  	gluLookAt(8.0, 5.0, 7.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);  	glTranslatef(5.0, 7.0, 12.0);  	glRotatef(60.0, 1.0, 0.0, 0.0);  	
+	//draw a single point at (1,1,1) different from OpenGL ES 	glBegin(GL_POINTS);    	glVertex3f(1.0, 1.0, 1.0); 	glEnd();
+\end{lstlisting}
+
+\renewcommand{\labelenumi}{\alph{enumi})}
+\begin{enumerate}
+	\item{ Show the values in the ModelView Matrix after lines 5, 6, 7 and 8.}	\item{ Show the eye coordinates for the vertex in line 10.}	\item{ Show the values for the Projection Matrix after lines 2 and 3.}	\item{ Show the coordinates for the vertex after the perspective projection and perspective division (-1 to 1 clip coordinates).}
+\end{enumerate}
+
+\subsection{Solution a)}
+
+	
+
+\paragraph{Notes:}All transformations are added by setting up the „simple“ tranformation described in the current line. That is then added by Matrix Multiplication to the current transformation matrix to create a compound transformation.We are transforming coordinate frames here, relative to the current frame! Remember the layout of the OpenGL pipeline. Each vertex is multiplied through the current ModelView Matrix to get the eye coordinates. The result is then multiplied through the current Projection matrix and the result divided by the fourth value of the resulting homogenous coordinates.
+
+\section{Viewport mapping and clipping}Consider a graphics program where: \\
+ Window \emph{(left, right, bottom, top)} =  \emph{(30, 80, 20, 60)} and \\
+ Viewport  \emph{(left, right, bottom, top)} =  \emph{(0, 800, 0, 600)} \\Find the values for A, B, C and D in a Window-to-Viewport mapping. (See lecture and earlier practice examples).In which pixel will the color value for P=(40,50) end up? (This has nothing to do with the color, just the position it will end up in).Use the Cohen-Sutherland clipping algorithm to clip the line with ends \(P_1=(30, 40)\) and \(P_2=(100, 20)\) against the window.
+
+\subsection{Solutuion}
+\paragraph{a)}
+\emph{Find the values for A, B, C and D in a Window-to-Viewport mapping.\\
+In which pixel will the color value for P=(40,50) end up?}
+\begin{alignat*}{2}
+Window(l, r, b, t) &= w(30, 80, 20, 60)\\
+Viewport(l, r, b, t) &=  v(0, 800, 0, 600) \\
+	\\
+	A 	&= \frac{v_r - v_l} { w_r - w_l} = \frac{800 - 0} { 80 - 30} = \frac{800} { 50} = \frac{80} { 5} = \textbf{16}
+		\\
+		\\
+	B 	&= \frac{v_t - v_b} { w_t - w_b} = \frac{600 - 0} { 60 - 20} = \frac{600} { 40} = \frac{60} { 4} = \textbf{15}
+	\\
+	\\
+	C	&= v_l - A * w_l\\
+		&= 0 -16 * 30\\
+		&= \textbf{-480}\\
+	\\
+	D	&= v_b - B * w_b\\
+		&= 0 - 15 * 20\\
+		&=\underline{\textbf{-300}}\\
+	\\
+	P(x,y) &= (40,50)
+	\\
+	\\
+	S_x	&= A * x + C\\
+		&= 16 * 40 + -480\\
+		&= \underline{160}
+	\\
+	S_y	&= B * y + D\\
+		&= 16 * 50 + -300\\
+		&= \underline{450}
+	\\
+	P	&= (40,50) \to P^{'} = (160,450)
+\end{alignat*}
+
+\paragraph{b)}
+\emph{Use the Cohen-Sutherland clipping algorithm to clip the line with ends \(P_1=(30, 40)\) and \(P_2=(100, 20)\) against the window.}
+
+
+\begin{alignat*}{2}
+	P_1 		&= (30,40) &P_2 = (100,20)\\
+	\\
+	\Delta x 	&= P_2(x) - P_1(x) = 100 -30 = 70\\
+	\Delta y	&= P_2(y) - P_1(y) = 20 -40 = -20 \\
+	\\
+	(w_l,w_r,w_b,w_t) &= (30,80,20,60)\\
+\end{alignat*}
+Since \(P_2\) is outside the Window boarders, we want to calculate \( P_{2}^{'} \)
+\begin{alignat*}{2}
+	 P_{2}^{'}(x) &= w_r = 80\\
+	 P_{2}^{'}(y) &= 20 + (80 -100) * \frac{-20}{70}\\
+	  	&= 20 - 20 *  \frac{-20}{70}\\
+		&=  \underline{25.71}
+\end{alignat*}
+
+\section{Lighting}A single light is in the light model in an OpenGL program. It has the ambient values (0.0, 0.0, 0.0), diffuse values (0.3, 0.4, 0.3), specular values (0.8, 0.8,0.8) and position (0.0, 5.0, 6.0). There is also a global ambient factor of (0.3, 0.3, 0.3) in the light model.A camera is positioned in (6.0, 6.0, 8.0) and looks towards P.P has the color values:ambient (0.2, 0.1, 0.3), diffuse (0.5, 0.5, 0.5) and specular (0.8, 0.8, 0.8). It has the shininess factor 20. It has the position (4.0, 7.0, 3.0) and a normal (0.0,0.0, 1.0).What will be the green color value for P on the screen ?
+\begin{multicols}{2}
+\begin{alignat*}{2}
+Camera_{position}	&= (6.0, 6.0, 8.0) \\
+	Global_{ambient}	&= (0.3, 0.3 0.3) \\
+\end{alignat*}
+\end{multicols}
+\subsection{Solutuion}
+\begin{alignat*}{2}
+	Camera_{position}	&= (6.0, 6.0, 8.0)
+	&Global_{ambient}	&= (0.3, 0.3 0.3) \\
+	\\
+	P_{position}		&=  (4.0, 7.0, 3.0)
+	&Light_{position}	&= (0.0, 5.0, 6.0)\\
+	P_{ambient}		&= (0.2, 0.1, 0.3)
+	&Light_{ambient}	&= (0.0, 0.0, 0.0)\\
+	P_{diffuse}		&= (0.5, 0.5, 0.5)
+	&Light_{diffuse}	&= (0.3, 0.4, 0.3)\\
+	P_{specular}		&= (0.8, 0.8, 0.8)
+	&Light_{specular}	&= (0.8, 0.8,0.8)\\
+	P_{normal}		&=  (0.0,0.0, 1.0)
+\\
+	A 	&= \frac{v_r - v_l} { w_r - w_l} = \frac{800 - 0} { 80 - 30} = \frac{800} { 50} = \frac{80} { 5} = \textbf{16}
+		\\
+		\\
+	B 	&= \frac{v_t - v_b} { w_t - w_b} = \frac{600 - 0} { 60 - 20} = \frac{600} { 40} = \frac{60} { 4} = \textbf{15}
+	\\
+	\\
+	C	&= v_l - A * w_l\\
+		&= 0 -16 * 30\\
+		&= \textbf{-480}\\
+	\\
+	D	&= v_b - B * w_b\\
+		&= 0 - 15 * 20\\
+		&=\underline{\textbf{-300}}\\
+	\\
+	P(x,y) &= (40,50)
+	\\
+	\\
+	S_x	&= A * x + C\\
+		&= 16 * 40 + -480\\
+		&= \underline{160}
+	\\
+	S_y	&= B * y + D\\
+		&= 16 * 50 + -300\\
+		&= \underline{450}
+	\\
+	P	&= (40,50) \to P^{'} = (160,450)
+\end{alignat*}
+
+\section{Rasterization}A triangle is sent through the OpenGL pipeline and ends up on the viewport with corners in pixels:P1: (5, 3)P2: (3, 9)P3: (14, 12)The corners are linked to the color values:P1: (0.2, 0.2, 0.2)P2: (0.6, 0.6, 0.6)P3: (0.9, 0.9, 0.9)What color will pixel (5, 6) in the viewport have ?
+
+\section{Bezier motion}Scalars in bezier curves are found by factoring Bernstein polynomials:for a bezier curve with L + 1 control points. A camera is moved along a bezier curve with 4 control points.P1 = (3, 5, 7), P2 = (7, 5, 3), P3 = (10, 5, 4), P4 = (15, 5, 8)The motion should start 20 seconds after the program starts and it should end 10 seconds later, 30 seconds after the program starts.Where is the camera at the time 24 seconds after the program started ?
+
+
+\end{document}
