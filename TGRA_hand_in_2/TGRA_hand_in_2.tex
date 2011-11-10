@@ -117,8 +117,131 @@ Consider the following code:
 \end{enumerate}
 
 \subsection{Solution a)}
+\emph{Show the values in the ModelView Matrix after lines 5, 6, 7 and 8.}
 
-	
+ \begin{alignat*}{2}
+	eye		&= (8.0, 5.0, 7.0)\\
+	center	&= (0.0,0.0.0.0)\\
+	\\
+	n		&= eye -center = (8,5,7)\\
+	\\
+	u		&= up \times n = (1*7- 0*5, 0*8-0*7, 0*8 - 1*8)\\
+			&=(7,0,-8)\\
+	\\
+	v		&= n \times u = (5*-8 - 7*0, 7*7 -8*-8, 8*0 - 5*7)\\
+			&=(-40,113,-35)\\
+\end{alignat*}
+\textbf{Normalize:}
+\begin{alignat*}{2}
+	\lvert n\rvert	& = \sqrt{64+25+49} = \sqrt{138} \\
+	n	 		&= (\frac{8}{\sqrt{138}}, \frac{5}{\sqrt{138}}, \frac{7}{\sqrt{138}})\\
+	\\
+	\lvert u\rvert	& = \sqrt{49+0+64} = \sqrt{113}\\
+	u			&= (\frac{7}{\sqrt{113}}, \frac{0}{\sqrt{113}}, \frac{-8}{\sqrt{113}})\\
+	\\
+	\lvert v\rvert	& = \sqrt{1600+12769+1225} = \sqrt{15594}\\
+	v			&= (\frac{-40}{\sqrt{15594}}, \frac{113}{\sqrt{15594}}, \frac{-35}{\sqrt{15594}})\\
+	\\
+	VM &=\begin{bmatrix}
+		\frac{7}{\sqrt{113}} & \frac{0}{\sqrt{113}} & \frac{-8}{\sqrt{113}} & 0 \\
+		\frac{-40}{\sqrt{15594}} & \frac{113}{\sqrt{15594}} & \frac{-35}{\sqrt{15594}} & 0 \\
+		\frac{8}{\sqrt{138}} & \frac{5}{\sqrt{138}} & \frac{7}{\sqrt{138}} & -\sqrt{138} \\
+		0 & 0 & 0 & 1
+	\end{bmatrix}
+\end{alignat*}
+\newline
+\textbf{glTranslatef(5,7,12):}\\
+\begin{alignat*}{2}
+	VM &=\begin{bmatrix}
+		\frac{7}{\sqrt{113}} & \frac{0}{\sqrt{113}} & \frac{-8}{\sqrt{113}} & 0 \\
+		\frac{-40}{\sqrt{15594}} & \frac{113}{\sqrt{15594}} & \frac{-35}{\sqrt{15594}} & 0 \\
+		\frac{8}{\sqrt{138}} & \frac{5}{\sqrt{138}} & \frac{7}{\sqrt{138}} & -\sqrt{138} \\
+		0 & 0 & 0 & 1
+	\end{bmatrix}
+	&\begin{bmatrix}
+		1 & 0 & 0 & 5\\
+		0 & 1 & 0 & 7\\
+		0 & 0 & 1 & 12\\
+		0 & 0 & 0 & 1
+	\end{bmatrix}\\
+	\\
+	VM &=\begin{bmatrix}
+		\frac{7}{\sqrt{113}} & \frac{0}{\sqrt{113}} & \frac{-8}{\sqrt{113}} &   \frac{-61}{\sqrt{113}} \\
+		\frac{-40}{\sqrt{15594}} & \frac{113}{\sqrt{15594}} & \frac{-35}{\sqrt{15594}} & \frac{-420}{\sqrt{15594}} \\
+		\frac{8}{\sqrt{138}} & \frac{5}{\sqrt{138}} & \frac{7}{\sqrt{138}} &  \frac{159}{\sqrt{138}} -\sqrt{138} \\
+		0 & 0 & 0 & 1
+	\end{bmatrix}
+\end{alignat*}
+\newline
+\textbf{glRotatef(60,1,0,0):}\\
+\begin{alignat*}{2}
+	RM &= \begin{bmatrix}
+		1 & 0 & 0 & 0\\
+		0 & 0.5 & 0.866 & 0\\
+		0 & 0.866 & 0.5 & 0\\
+		0 & 0 & 0 & 1
+	\end{bmatrix}\\
+	\\
+	VM &=\begin{bmatrix}
+		\frac{7}{\sqrt{113}} & \frac{0}{\sqrt{113}} & \frac{-8}{\sqrt{113}} & 0 \\
+		\frac{-40}{\sqrt{15594}} & \frac{113}{\sqrt{15594}} & \frac{-35}{\sqrt{15594}} & 0 \\
+		\frac{8}{\sqrt{138}} & \frac{5}{\sqrt{138}} & \frac{7}{\sqrt{138}} & -\sqrt{138} \\
+		0 & 0 & 0 & 1
+	\end{bmatrix}
+	 &\begin{bmatrix}
+		1 & 0 & 0 & 0\\
+		0 & 0.5 & 0.866 & 0\\
+		0 & 0.866 & 0.5 & 0\\
+		0 & 0 & 0 & 1
+	\end{bmatrix}\\
+	\\
+	VM &=\begin{bmatrix}
+		\frac{7}{\sqrt{113}} & \frac{-6.928}{\sqrt{113}} & \frac{-4}{\sqrt{113}} &   \frac{-61}{\sqrt{113}} \\
+		\frac{-40}{\sqrt{15594}} & \frac{26.19}{\sqrt{15594}} & \frac{-115.358}{\sqrt{15594}} & \frac{-171}{\sqrt{15594}} \\
+		\frac{8}{\sqrt{138}} & \frac{8.562}{\sqrt{138}} & \frac{-0.83}{\sqrt{138}} &  \frac{159}{\sqrt{138}} -\sqrt{138} \\
+		0 & 0 & 0 & 1
+	\end{bmatrix}
+\end{alignat*}
+
+\subsection{Solution c)}
+\emph{Show the values for the Projection Matrix after lines 2 and 3.}
+\\
+\\
+\textbf{gluPerspective (90.0 , 1.25 , 3.0 , 20.0) :}\\
+\\
+\emph{gluPerspective (angle , ratio , near , far)}\\
+\begin{alignat*}{2}
+	P &=\begin{bmatrix}
+		1 & 0 & 0 & 0\\
+		0 & 1 & 0 & 0\\
+		0 & 0 & 1 & 0\\
+		0 & 0 & 0 & 1
+	\end{bmatrix}\\
+\end{alignat*}
+\emph{gluFrustum (left , right , bottom , top)}
+\begin{alignat*}{2}
+	&angle	= 90\\
+	&ratio	= 1.25\\
+	&near	= 3.0\\
+	&far		=20.0\\
+	top		&= near * \tan{\frac{angle}{2}} = 3 *  \tan{\frac{90}{2}} = 3\\
+	bottom	&= -top = -3\\
+	right		&= top * ratio = 3 * 1.25 = 3.75\\
+	left		&= -right	= -3.75\\
+	\\
+	P &= \begin{bmatrix}
+		\frac{2* near}{right-left}	& 0						& \frac{right+left}{right-left} 		& 0\\
+		0					& \frac{2*near}{top-bottom}	& \frac{top+bottom}{top-bottom}	& 0\\
+		0 					& 0						& \frac{-(far+near)}{far-near}		& \frac{-2*far*near}{far-near}\\
+		0					& 0						& -1							& 0
+	\end{bmatrix}\\
+	P &=\begin{bmatrix}
+		0.8 & 0 & 0 & 0\\
+		0 & 1 & 0 & 0\\
+		0 & 0 & -1.35 & -7.06\\
+		0 & 0 & -1 & 0
+	\end{bmatrix}\\
+\end{alignat*}
 
 \paragraph{Notes:}
 All transformations are added by setting up the „simple“ tranformation described in the current line. That is then added by Matrix Multiplication to the current transformation matrix to create a compound transformation.
