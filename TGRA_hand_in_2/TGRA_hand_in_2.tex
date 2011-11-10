@@ -256,9 +256,8 @@ The corners are linked to the color values: \\
 What color will pixel (5, 6) in the viewport have ?
 
 \subsection{Solution}
-
 \begin{alignat*}{2}
-	lerp(A,B,t)	&= (i - t) * A + t * B\\
+	lerp(A,B,t)	&= (1 - t) * A + t * B\\
 	\\
 	x_{left}	&= lerp(5, 3, \frac{6-3}{9-3} )= lerp(5, 3, 0.5)\\
 			&= 4\\
@@ -269,16 +268,37 @@ What color will pixel (5, 6) in the viewport have ?
 	c_{right}	&= lerp(0.2, 0.9, 0.33 ) = 0.433\\
 	c		&= lerp(0.4, 0.433, \frac{5-4}{8-4}) = lerp(0.4, 0.433, 0.25)\\
 			&= 0.40825
-\\
 \end{alignat*}
-
 
 \section{Bezier motion}
 Scalars in bezier curves are found by factoring Bernstein polynomials:
 for a bezier curve with L + 1 control points. A camera is moved along a bezier curve with 4 control points.
-P1 = (3, 5, 7), P2 = (7, 5, 3), P3 = (10, 5, 4), P4 = (15, 5, 8)
+\(P_1 = (3, 5, 7)\), \(P_2 = (7, 5, 3)\), \(P_3 = (10, 5, 4)\), \(P_4 = (15, 5, 8)\)
 The motion should start 20 seconds after the program starts and it should end 10 seconds later, 30 seconds after the program starts.
 Where is the camera at the time 24 seconds after the program started ?
 
-
+\subsection{Solution}
+\begin{alignat*}{2}
+	P_1 &= (3, 5, 7)\\
+	P_2 &= (7, 5, 3)\\
+	P_3 &= (10, 5, 4)\\
+	P_4 &= (15, 5, 8)\\
+\end{alignat*}
+Motion starts at 20 sec. \\
+Motion ends at 30 sec. \\
+Where it is at 24 sec. \\
+\\
+\textbf{Bernstein polynominal:}\\
+\(B^3 = (( 1-t) +t)^3 = (1-t)^3 + 3(1- t)^2 * t + 3(1 - t) * t^2 + t^3\)
+\begin{alignat*}{2}
+	t	&= \frac{currentTime - startTime}{endTime -startTime}\\
+		&= \frac{24-20}{30-20} = \frac{4}{10}\\
+		&= 0.4\\
+(1-t)		&= 0.6\\
+	\\
+	P	&= (1-t)^3 * P_1 + 3(1- t)^2 * t *P_2 + 3(1 - t) * t^2 P_3 + t^3 *P_4\\
+		&= \frac{27}{125} * (3,5,7) +\frac{54}{125} * (7,5,3) + \frac{36}{125}* (10, 5,4) + \frac{8}{125} * (15,5,8)\\
+		&=  ( \frac{81 + 378 + 360 +120}{125}, \frac{135+270+180+40}{125}, \frac{189+162+144+64}{125}\\
+		&= (7.512, 5, 4.472)
+\end{alignat*}
 \end{document}
