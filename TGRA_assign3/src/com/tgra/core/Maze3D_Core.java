@@ -35,8 +35,7 @@ public class Maze3D_Core implements ApplicationListener
 		Gdx.gl11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
 
 		maze = new Maze();
-		
-		cam = new MazeCam(new Point3D(1.5f, 0.5f, 0.5f), new Point3D(1.5f, 0.5f, 2f), new Vector3D(0.0f, 1.0f, 0.0f), maze);
+		cam = new MazeCam(new Point3D(1f, 0.5f, 0.0f), new Point3D(0.0f, 0.5f, 0.5f), new Vector3D(0.0f, 1.0f, 0.0f), maze);
 		maze.setCam(cam);
 		Gdx.gl11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
 		cube = new Cube();
@@ -59,7 +58,54 @@ public class Maze3D_Core implements ApplicationListener
 	
 	private void update()
 	{
-		this.cam.update();
+		
+		float deltaTime = Gdx.graphics.getDeltaTime();
+		if(Gdx.input.isKeyPressed(Input.Keys.UP))
+		{
+			cam.pitch(-90.0f * deltaTime);
+		}
+		if(Gdx.input.isKeyPressed(Input.Keys.DOWN))
+		{
+			cam.pitch(90.0f * deltaTime);
+		}
+
+		if(Gdx.input.isKeyPressed(Input.Keys.LEFT))
+		{
+			cam.yaw(-90.0f * deltaTime);
+		}
+		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT))
+		{
+			cam.yaw(90.0f * deltaTime);
+		}
+		if(Gdx.input.isKeyPressed(Input.Keys.W))
+		{
+			cam.slide(0.0f, 0.0f, -3.0f * deltaTime);
+		}
+		if(Gdx.input.isKeyPressed(Input.Keys.S))
+		{
+			cam.slide(0.0f, 0.0f, 3.0f * deltaTime);
+		}
+		if(Gdx.input.isKeyPressed(Input.Keys.A))
+		{
+			cam.slide(-3.0f * deltaTime, 0.0f, 0.0f);
+		}
+		if(Gdx.input.isKeyPressed(Input.Keys.D))
+		{
+			cam.slide(3.0f * deltaTime, 0.0f, 0.0f);
+		}
+		
+
+		if(Gdx.input.isKeyPressed(Input.Keys.R))
+		{
+			cam.slide(0.0f, 10.0f * deltaTime, 0.0f);
+		}
+		if(Gdx.input.isKeyPressed(Input.Keys.F))
+		{
+			cam.slide(0.0f, -10.0f * deltaTime, 0.0f);
+		}
+		
+		
+		//this.cam.update();
 		this.maze.update();
 		
 		if(maze.isFinish()) {
@@ -141,7 +187,7 @@ public class Maze3D_Core implements ApplicationListener
 		Gdx.gl11.glMatrixMode (GL11.GL_PROJECTION);
 		Gdx.gl11.glLoadIdentity ();
 		
-		Gdx.glu.gluPerspective (Gdx.gl11, 45, (float) w / (float) h, 0.2f, 1000.0f );
+		Gdx.glu.gluPerspective (Gdx.gl11, 45, (float) w / (float) h, 0.02f, 1000.0f );
 		Gdx.gl11.glMatrixMode (GL11.GL_MODELVIEW); //set the matrix back to model
 
 	}
