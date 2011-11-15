@@ -4,8 +4,8 @@ package com.tgra.core;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Stack;
-
 import com.tgra.model.Cell;
+import com.tgra.model.Cube;
  
 /**
  * 
@@ -141,11 +141,13 @@ public class MazeGenerator {
 	 * the generated cells have all walls set.
 	 */
 	private void generateCellsWithWalls() {
-			
+		Cube floorCube = new Cube("assets/textures/floor.jpg");
+		Cube wallCube = new Cube("assets/textures/wall.jpg");
+		
 		for (int row = 0; row < mazeWidth; row++) {	
 			for (int col = 0; col < mazeLength; col++) {
 					
-				this.cells[col][row] = new Cell(col,row);
+				this.cells[col][row] = new Cell(col,row, wallCube, floorCube);
 			}
 		}
 	}
