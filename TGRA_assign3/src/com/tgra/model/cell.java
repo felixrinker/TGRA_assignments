@@ -112,7 +112,6 @@ public class Cell {
 	public void draw() {
 		
 		Gdx.gl11.glPushMatrix();
-		Gdx.gl11.glTranslatef( 0.5f, 0.0f, 0.5f );
 		Gdx.gl11.glScalef(1.0f, 0.15f, 1.0f);
 		
 		this.drawFloorTexture();
@@ -124,7 +123,7 @@ public class Cell {
 		
 		if(this.isSouthWall()) {
 			Gdx.gl11.glPushMatrix();
-			Gdx.gl11.glTranslatef( 0.5f, 0.5f, 0.0f );
+			Gdx.gl11.glTranslatef( 0.0f, 0.5f, -0.5f );
 			Gdx.gl11.glScalef(1.0f, 1.0f, 0.05f);
 			
 			this.drawWallTexture();
@@ -136,7 +135,7 @@ public class Cell {
 		
 		if(this.isWestWall()) {
 			Gdx.gl11.glPushMatrix();
-			Gdx.gl11.glTranslatef( 1.0f, 0.5f, 0.5f );
+			Gdx.gl11.glTranslatef( 0.5f, 0.5f, 0.0f );
 			Gdx.gl11.glScalef(0.05f, 1.0f, 1.0f);
 			
 			this.drawWallTexture();
