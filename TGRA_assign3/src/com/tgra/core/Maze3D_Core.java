@@ -104,8 +104,6 @@ public class Maze3D_Core implements ApplicationListener
 			cam.slide(0.0f, -10.0f * deltaTime, 0.0f);
 		}
 		
-		
-		//this.cam.update();
 		this.maze.update();
 		
 		if(maze.isFinish()) {
