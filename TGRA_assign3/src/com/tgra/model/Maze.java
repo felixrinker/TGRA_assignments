@@ -27,8 +27,8 @@ public class Maze {
 	private BitmapFont font;
 	private boolean finish;
 	private boolean start;
-	private static int MAZE_LENGTH = 10;
-	private static int MAZE_HEIGHT = 20;	
+	private static int MAZE_LENGTH = 5;
+	private static int MAZE_HEIGHT = 5;	
 	
 	public Maze() {
 		
@@ -58,7 +58,7 @@ public class Maze {
 	private void  drawEndModel() {
 		float scale = 0.0003f;
 		Gdx.gl11.glPushMatrix();
-		Gdx.gl11.glTranslatef( endCell.getPosX()+0.5f, 0.0f, (float) endCell.getPosY()+0.5f );
+		Gdx.gl11.glTranslatef( endCell.getPosX(), 0.0f, (float) endCell.getPosY() );
 		Gdx.gl11.glScalef(scale, scale, scale);
 		
 		Gdx.gl11.glRotatef(180f,0, 1, 0);
@@ -104,8 +104,43 @@ public class Maze {
 	
 	public void update() {
 		
-		Cell cuCell = cam.getCurrentCell();
 		
+		float coordX = (cam.getEye().x + 0.5f);
+        float coordZ = (cam.getEye().z + 0.5f);
+        int posX = (int)Math.floor(coordX);
+        int posZ = (int)Math.floor(coordZ);
+
+        if (coordX - posX > 0.8f) {
+            if (hasWestWall(posX, posZ)) {
+            	cam.getEye().x = posX + 0.3f;
+             	
+             	System.out.println("West");
+            }
+               
+        }
+        if (coordX - posX < 0.2f) {
+            if (hasEastWall(posX, posZ)) {
+            	 cam.getEye().x = posX - 0.3f;
+            	 System.out.println("EAST");
+            }
+               
+        }
+        if (coordZ - posZ < 0.2f) {
+            if (hasSouthWall(posX, posZ)){
+            	cam.getEye().z = posZ - 0.3f;
+            	System.out.println("South");
+            }
+                
+        }
+        if (coordZ - posZ > 0.8f) {
+            if (hasNorthWall(posX, posZ)) {
+            	 cam.getEye().z = posZ + 0.3f;
+                 System.out.println("North");
+            }
+               
+        }
+		
+		Cell cuCell = this.getCurrentCell();
 		if(cuCell.equals(endCell)) this.finish = true;
 	}
 	
@@ -128,7 +163,7 @@ public class Maze {
 	 */
 	public boolean hasEastWall( int x, int y ) {
 		
-		return this.cells[x+1][y].isWestWall();
+		return this.cells[x-1][y].isWestWall();
 	}
 	/**
 	 * 
@@ -186,5 +221,12 @@ public class Maze {
 		this.start = start;
 	}
 	
-	
+	public Cell getCurrentCell() {
+		float coordX = (cam.getEye().x + 0.5f);
+        float coordZ = (cam.getEye().z + 0.5f);
+		int fieldPosX = (int)Math.floor(coordX);
+		int fieldPosZ = (int)Math.floor(coordZ);
+		
+		return this.getCell(fieldPosX, fieldPosZ);
+	}
 }
