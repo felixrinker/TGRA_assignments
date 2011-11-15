@@ -3,9 +3,6 @@ package com.tgra.camera;
 import com.badlogic.gdx.graphics.GL11;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.tgra.model.Cell;
-import com.tgra.model.Maze;
 import com.tgra.model.Point3D;
 import com.tgra.model.Vector3D;
 
@@ -15,16 +12,9 @@ public class MazeCam {
 	private Vector3D n;
 	private Vector3D u;
 	private Vector3D v;
-	private Maze maze;
-	private float wallDistanceZeroThree = 0.3f;
-	private float wallDistZeroSix = 0.6f;
 
-	public  MazeCam(Point3D pEye, Point3D pCenter, Vector3D up, Maze maze)
+	public  MazeCam(Point3D pEye, Point3D pCenter, Vector3D up)
 	{
-
-		this.maze = maze;
-		this.wallDistanceZeroThree	= 0.3f;
-		this.wallDistZeroSix		= 0.7f;
 		this.eye = pEye;
 		this.n = Vector3D.difference(pEye, pCenter);
 		this.n.normalize();
