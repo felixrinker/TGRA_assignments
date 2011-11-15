@@ -35,7 +35,7 @@ public class Maze3D_Core implements ApplicationListener
 		Gdx.gl11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
 
 		maze = new Maze();
-		cam = new MazeCam(new Point3D(1f, 0.5f, 0.0f), new Point3D(0.0f, 0.5f, 0.5f), new Vector3D(0.0f, 1.0f, 0.0f), maze);
+		cam = new MazeCam(new Point3D(1f, 0.5f, 0.0f), new Point3D(0.0f, 0.5f, 0.5f), new Vector3D(0.0f, 1.0f, 0.0f));
 		maze.setCam(cam);
 		Gdx.gl11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
 		cube = new Cube();
