@@ -1,6 +1,7 @@
 package com.tgra.core;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL11;
 import com.tgra.camera.MazeCam;
@@ -21,21 +22,18 @@ public class Maze3D_Core implements ApplicationListener
 		Gdx.gl11.glEnable(GL11.GL_LIGHT0);
 		Gdx.gl11.glEnable(GL11.GL_LIGHT1);
 		Gdx.gl11.glEnable(GL11.GL_DEPTH_TEST);
-		Gdx.gl11.glEnable(GL11.GL_NORMALIZE);
-		Gdx.gl11.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-
+        Gdx.gl11.glEnable(GL11.GL_NORMALIZE);
+        
+        Gdx.gl11.glClearColor(0.4f, 0.4f, 0.85f, 1.0f);
 		
 		int w = Gdx.graphics.getWidth();
 		int h = Gdx.graphics.getHeight();
 		
 		this.resize(w, h);
 
-		Gdx.gl11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
-
 		maze = new Maze();
 		cam = new MazeCam(new Point3D(1f, 0.5f, 0.0f), new Point3D(0.0f, 0.5f, 0.5f), new Vector3D(0.0f, 1.0f, 0.0f));
 		maze.setCam(cam);
-		Gdx.gl11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
 	}
 	
 	
@@ -57,14 +55,14 @@ public class Maze3D_Core implements ApplicationListener
 	{
 		
 		float deltaTime = Gdx.graphics.getDeltaTime();
-		/*if(Gdx.input.isKeyPressed(Input.Keys.UP))
+		if(Gdx.input.isKeyPressed(Input.Keys.UP))
 		{
 			cam.pitch(-90.0f * deltaTime);
 		}
 		if(Gdx.input.isKeyPressed(Input.Keys.DOWN))
 		{
 			cam.pitch(90.0f * deltaTime);
-		}*/
+		}
 
 		if(Gdx.input.isKeyPressed(Input.Keys.LEFT))
 		{
@@ -117,25 +115,35 @@ public class Maze3D_Core implements ApplicationListener
 		
 		Gdx.gl11.glClear(GL11.GL_COLOR_BUFFER_BIT|GL11.GL_DEPTH_BUFFER_BIT);
 		
-		// light 0
 		cam.setModelViewMatrix();
+		
+		// light 0
 		float[] lightDiffuse = {1.0f, 1.0f, 1.0f, 1.0f};
 		Gdx.gl11.glLightfv(GL11.GL_LIGHT0, GL11.GL_DIFFUSE, lightDiffuse, 0);
 
-		float[] lightPosition = {-15.0f, 8.0f, 5.0f, 1.0f};
+		float[] lightPosition = {-10.0f, 5.0f, 5.0f, 1.0f};
 		Gdx.gl11.glLightfv(GL11.GL_LIGHT0, GL11.GL_POSITION, lightPosition, 0);
 
 		
 		// light 1
-		float[] lightDiffuse1 = {0.5f, 0.5f, 0.5f, 1.0f};
+		float[] lightDiffuse1 = {1.0f, 1.0f, 1.0f, 1.0f};
 		Gdx.gl11.glLightfv(GL11.GL_LIGHT1, GL11.GL_DIFFUSE, lightDiffuse1, 0);
-
-		float[] lightPosition1 = {5.0f, -10.0f, -15.0f, 1.0f};
+		
+		float[] lightPosition1 = {cam.getEye().x, cam.getEye().y, cam.getEye().z, 1.0f};
 		Gdx.gl11.glLightfv(GL11.GL_LIGHT1, GL11.GL_POSITION, lightPosition1, 0);
 
+		float[] lightDirection1 = {-cam.getN().x, -cam.getN().y, -cam.getN().z, 0.0f};
+		Gdx.gl11.glLightfv(GL11.GL_LIGHT1, GL11.GL_SPOT_DIRECTION, lightDirection1, 0);
+	
+		
 		// material
 		float[] materialDiffuse = {1.0f, 1.0f, 1.0f, 1.0f};
 		Gdx.gl11.glMaterialfv(GL11.GL_FRONT, GL11.GL_DIFFUSE, materialDiffuse, 0);
+
+		float[] materialSpecular = {1.0f, 1.0f, 1.0f, 1.0f};
+		Gdx.gl11.glMaterialfv(GL11.GL_FRONT, GL11.GL_SPECULAR, materialSpecular, 0);
+		
+		Gdx.gl11.glMaterialf(GL11.GL_FRONT, GL11.GL_SHININESS, 90.0f);
 		
 		this.maze.draw();	
 	}
@@ -167,5 +175,8 @@ public class Maze3D_Core implements ApplicationListener
 		// TODO Auto-generated method stub
 		
 	}
-
+	
+	public boolean needsGL20() {
+	      return true;
+	   }
 }

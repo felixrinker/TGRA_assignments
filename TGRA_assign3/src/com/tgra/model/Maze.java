@@ -27,6 +27,10 @@ public class Maze {
 	private BitmapFont font;
 	private boolean finish;
 	private boolean start;
+	private Skybox sky;
+	private Sphere sphere;
+	private SkyDome skyDome;
+	private Sky ss;
 	private static int MAZE_LENGTH = 5;
 	private static int MAZE_HEIGHT = 5;	
 	
@@ -53,13 +57,31 @@ public class Maze {
 		
 		this.endCell = this.cells[MAZE_LENGTH-1][MAZE_HEIGHT-2];
 		
+		sky = new Skybox("assets/textures/skybox.png");
+		sphere = new Sphere(500, 480);
+		skyDome = new SkyDome(10, 60, 240);
+		ss = new Sky(10f, 60f, 240f, 10f, 10f);
+		
 	}
 
 	/**
 	 * Draws all components in the maze
 	 */
 	public void draw() {
-		if(!finish) {	
+		if(!finish) {
+			
+			Gdx.gl11.glPushMatrix();
+			Gdx.gl11.glTranslatef( 2.5f, 0f, 2.5f );
+			//Gdx.gl11.glScalef(4f, 4f, 4f);
+			//this.sphere.draw();
+			this.skyDome.draw();
+			
+			//this.ss.draw();
+			
+		Gdx.gl11.glPopMatrix();
+			
+			
+			//this.sky.draw();
 			this.drawMaze();
 			this.drawEndModel();
 		} 
@@ -155,8 +177,8 @@ public class Maze {
 		    for (int col=0; col < MAZE_LENGTH; col++)
 		    {
 		    	Gdx.gl11.glPushMatrix();
-				Gdx.gl11.glTranslatef( (float) col, 0.0f, (float) row );
-				cells[col][row].draw();
+					Gdx.gl11.glTranslatef( (float) col, 0.0f, (float) row );
+					cells[col][row].draw();
 				Gdx.gl11.glPopMatrix();
 		    }
 		}
@@ -168,12 +190,10 @@ public class Maze {
 	private void  drawEndModel() {
 		float scale = 0.0003f;
 		Gdx.gl11.glPushMatrix();
-		Gdx.gl11.glTranslatef( endCell.getPosX(), 0.0f, (float) endCell.getPosY() );
-		Gdx.gl11.glScalef(scale, scale, scale);
-		
-		Gdx.gl11.glRotatef(180f,0, 1, 0);
-		model.render(GL11.GL_TRIANGLES);
-		
+			Gdx.gl11.glTranslatef( endCell.getPosX(), 0.0f, (float) endCell.getPosY() );
+			Gdx.gl11.glScalef(scale, scale, scale);
+			Gdx.gl11.glRotatef(180f,0, 1, 0);
+			model.render(GL11.GL_TRIANGLES);
 		Gdx.gl11.glPopMatrix();
 
 	}

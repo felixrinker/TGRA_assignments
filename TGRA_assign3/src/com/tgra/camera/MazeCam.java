@@ -97,5 +97,9 @@ public class MazeCam {
 	public Point3D getEye() {
 		return eye;
 	}
+
+	public Vector3D getN() {
+		return n;
+	}
 }
 
