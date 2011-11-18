@@ -27,8 +27,12 @@ public class Maze {
 	private BitmapFont font;
 	private boolean finish;
 	private boolean start;
-	private static int MAZE_LENGTH = 10;
-	private static int MAZE_HEIGHT = 20;	
+	private Skybox sky;
+	private Sphere sphere;
+	private SkyDome skyDome;
+	private Sky ss;
+	private static int MAZE_LENGTH = 5;
+	private static int MAZE_HEIGHT = 5;	
 	
 	public Maze() {
 		
@@ -53,40 +57,151 @@ public class Maze {
 		
 		this.endCell = this.cells[MAZE_LENGTH-1][MAZE_HEIGHT-2];
 		
+		sky = new Skybox("assets/textures/skybox.png");
+		sphere = new Sphere(500, 480);
+		skyDome = new SkyDome(10, 60, 240);
+		ss = new Sky(10f, 60f, 240f, 10f, 10f);
+		
+	}
+
+	/**
+	 * Draws all components in the maze
+	 */
+	public void draw() {
+		if(!finish) {
+			
+			Gdx.gl11.glPushMatrix();
+			Gdx.gl11.glTranslatef( 2.5f, 0f, 2.5f );
+			//Gdx.gl11.glScalef(4f, 4f, 4f);
+			//this.sphere.draw();
+			this.skyDome.draw();
+			
+			//this.ss.draw();
+			
+		Gdx.gl11.glPopMatrix();
+			
+			
+			//this.sky.draw();
+			this.drawMaze();
+			this.drawEndModel();
+		} 
+		if(finish) this.drawEndScreen();
 	}
 	
-	private void  drawEndModel() {
-		float scale = 0.0003f;
-		Gdx.gl11.glPushMatrix();
-		Gdx.gl11.glTranslatef( endCell.getPosX()+0.5f, 0.0f, (float) endCell.getPosY()+0.5f );
-		Gdx.gl11.glScalef(scale, scale, scale);
+	/**
+	 * Perform the updates in the maze
+	 */
+	public void update() {
+			
+		float coordX = (cam.getEye().x + 0.5f);
+        float coordZ = (cam.getEye().z + 0.5f);
+       
+        this.detectCollision(coordX, coordZ);
 		
-		Gdx.gl11.glRotatef(180f,0, 1, 0);
-		model.render(GL11.GL_TRIANGLES);
+		Cell cuCell = this.getCellForCorrd(coordX, coordZ);
+		if(cuCell.equals(endCell)) this.finish = true;
+	}
+	
+//////////////////////////////////////////WALL Privates //////////////////////////////////////////////
+	/**
+	 * 
+	 * @param coordX
+	 * @param coordZ
+	 */
+	private void detectCollision( float coordX, float coordZ) {
 		
-		Gdx.gl11.glPopMatrix();
+		 int posX = (int)Math.floor(coordX);
+	        int posZ = (int)Math.floor(coordZ);
 
+	        if (coordX - posX > 0.8f) {
+	            if (hasWestWall(posX, posZ)) {
+	            	cam.getEye().x = posX + 0.3f;
+	             	System.out.println("West");
+	            }             
+	        }
+	        if (coordX - posX < 0.2f) {
+	            if (hasEastWall(posX, posZ)) {
+	            	 cam.getEye().x = posX - 0.3f;
+	            	 System.out.println("EAST");
+	            }          
+	        }
+	        if (coordZ - posZ < 0.2f) {
+	            if (hasSouthWall(posX, posZ)){
+	            	cam.getEye().z = posZ - 0.3f;
+	            	System.out.println("South");
+	            }     
+	        }
+	        if (coordZ - posZ > 0.8f) {
+	            if (hasNorthWall(posX, posZ)) {
+	            	 cam.getEye().z = posZ + 0.3f;
+	                 System.out.println("North");
+	            }     
+	        }
+	}
+	
+	/**
+	 * 
+	 * @param coordX
+	 * @param coordZ
+	 * @return
+	 */
+	private Cell getCellForCorrd(float coordX,float coordZ) {
+	
+		return this.getCellForPos((int)Math.floor(coordX), (int)Math.floor(coordZ));
+	}
+	
+	/**
+	 * 
+	 * @param posX
+	 * @param poxZ
+	 * @return
+	 */
+	private Cell getCellForPos( int posX, int poxZ ) {
+		
+		if(posX < 0) posX = 0;
+		if(posX > this.cells.length)  posX = this.cells.length;
+		
+		if(poxZ < 0) poxZ= 0;
+		if(poxZ > this.cells.length) poxZ = this.cells.length;
+		
+		return this.cells[posX][poxZ];
 	}
 
-	public void draw() {
-		
-		
-	if(!finish) {	
+	/**
+	 * Draws the maze
+	 * 
+	 */
+	private void drawMaze() {
 		for (int row=0; row < MAZE_HEIGHT; row++)
 		{
 		    for (int col=0; col < MAZE_LENGTH; col++)
 		    {
 		    	Gdx.gl11.glPushMatrix();
-				Gdx.gl11.glTranslatef( (float) col, 0.0f, (float) row );
-				cells[col][row].draw();
+					Gdx.gl11.glTranslatef( (float) col, 0.0f, (float) row );
+					cells[col][row].draw();
 				Gdx.gl11.glPopMatrix();
 		    }
 		}
-		
-		this.drawEndModel();
-	} 
-	if(finish){
-		
+	}
+	
+	/**
+	 * Draws the end model
+	 */
+	private void  drawEndModel() {
+		float scale = 0.0003f;
+		Gdx.gl11.glPushMatrix();
+			Gdx.gl11.glTranslatef( endCell.getPosX(), 0.0f, (float) endCell.getPosY() );
+			Gdx.gl11.glScalef(scale, scale, scale);
+			Gdx.gl11.glRotatef(180f,0, 1, 0);
+			model.render(GL11.GL_TRIANGLES);
+		Gdx.gl11.glPopMatrix();
+
+	}
+	
+	/**
+	 * Draw end screen
+	 */
+	private void drawEndScreen() {
 		Gdx.gl11.glDisable(GL11.GL_LIGHTING);
 		
 		Gdx.gl11.glClearColor(0.0f,0.0f,0.2f,1.0f);
@@ -99,69 +214,25 @@ public class Maze {
             font.setColor(0.9f, 1.0f, 1.0f, 1.0f);
             font.draw(batch, "Press Enter for a new Game", 110, 220);
             batch.end();
-		}
+	}
+//////////////////////////////////////WALL GETTER ////////////////////////////////////////////////
+
+	public boolean hasWestWall( int posX, int posZ ) {
+		return this.cells[posX][posZ].isWestWall();
+	}
+
+	public boolean hasEastWall( int posX, int posZ ) {
+		return this.cells[posX-1][posZ].isWestWall();
 	}
 	
-	public void update() {
-		
-		Cell cuCell = cam.getCurrentCell();
-		
-		if(cuCell.equals(endCell)) this.finish = true;
+	public boolean hasSouthWall( int posX, int posZ ) {
+		return this.cells[posX][posZ].isSouthWall();
 	}
 	
-	//////////////////////// WALL GETTER ///////////////////////////
-	/**
-	 * 
-	 * @param x
-	 * @param y
-	 * @return
-	 */
-	public boolean hasWestWall( int x, int y ) {
-		
-		return this.cells[x][y].isWestWall();
+	public boolean hasNorthWall( int posX, int posZ ) {
+			return this.cells[posX][posZ+1].isSouthWall();
 	}
-	/**
-	 * 
-	 * @param x
-	 * @param y
-	 * @return
-	 */
-	public boolean hasEastWall( int x, int y ) {
-		
-		return this.cells[x+1][y].isWestWall();
-	}
-	/**
-	 * 
-	 * @param x
-	 * @param y
-	 * @return
-	 */
-	public boolean hasSouthWall( int x, int y ) {
-		
-		return this.cells[x][y].isSouthWall();
-	}
-	/**
-	 * 
-	 * @param x
-	 * @param y
-	 * @return
-	 */
-	public boolean hasNorthWall( int x, int y ) {
-		
-		return this.cells[x][y+1].isSouthWall();
-	}
-	
-	public Cell getCell( int x, int y ) {
-		
-		if(x < 0) x = 0;
-		if(x > this.cells.length)  x = this.cells.length;
-		
-		if(y < 0) y= 0;
-		if(y > this.cells.length) y = this.cells.length;
-		
-		return this.cells[x][y];
-	}
-	
+
 	public void setCam(MazeCam cam) {
 		this.cam = cam;
 	}
@@ -185,6 +256,4 @@ public class Maze {
 	public void setStart(boolean start) {
 		this.start = start;
 	}
-	
-	
 }
